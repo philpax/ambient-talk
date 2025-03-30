@@ -772,6 +772,59 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
         </section>
         <section>
           <h2>Porting the runtime to the web</h2>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 60%">
+              <p>Just make a new client with the same crates?</p>
+              <p>WebAssembly / wgpu / winit dream team?</p>
+              <p>It can't be that simple, right?</p>
+            </div>
+            <div style="flex: 0 0 40%">
+              <pre><code class="language-toml" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+[package]
+name = "ambient_web"
+readme = "../README.md"
+version.workspace = true
+edition = "2021"
+description = "Web client for ambient"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/AmbientRun/Ambient"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+ambient_app.workspace = true
+ambient_audio.workspace = true
+ambient_cameras.workspace = true
+ambient_client_shared.workspace = true
+ambient_core.workspace = true
+ambient_prefab.workspace = true
+ambient_debugger.workspace = true
+ambient_ecs.workspace = true
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            But the biggest technical challenge we faced was porting the runtime
+            to the web. We decided on web support after we'd already built the
+            desktop client. Most other engines would struggle to survive this,
+            but we had a secret weapon: Rust's native support for WebAssembly.
+            As Ambient is modular, we created a new web client targeting
+            wasm32-unknown-unknown, and progressively added Ambient's crates to
+            it. We created a new client to ensure only the essentials were
+            included, and to reduce the scope of any potential discrepancies. We
+            believed that this would be straightforward. We had already built on
+            top of `wgpu` and `winit`, which would abstract over platform
+            specifics. That's all we need to do, right? It can't be that simple,
+            right?
+          </aside>
+        </section>
+        <section>
+          <h1 class="r-fit-text">It was not.</h1>
+          <aside class="notes">It was not.</aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
           <h3>Reality</h3>
           <div
             style="
@@ -847,7 +900,7 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
         </section>
         <section>
           <h2>Porting the runtime to the web</h2>
-          <h3>System abstraction</h3>
+          <h3>System</h3>
           <div style="display: flex; align-items: center">
             <div style="flex: 0 0 70%">
               <p>Time to write our own system abstraction!</p>
