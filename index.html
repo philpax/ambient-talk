@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      A Post-Mortem On Ambient: A Rust/WebAssembly Runtime for Cross-Platform
+      Multiplayer Games
+    </title>
+    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/reveal.js/dist/theme/serif.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/node_modules/reveal.js/plugin/highlight/zenburn.css"
+    />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section data-markdown>
+          <textarea data-template>
+            ## A Post-Mortem On Ambient
+
+            #### What <em>Was</em> A Rust/WebAssembly Runtime for Cross-Platform Multiplayer Games
+
+            Mithun Hunsur ([philpax.me](https://philpax.me))
+
+            Note:
+            G'day everyone, I'm here to talk to you about Ambient, the open-source cross-platform multiplayer game runtime that we built over the last two years.
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Who am I?
+
+            Mithun Hunsur, Senior Engineer @ Ambient
+            - Twitter: [@philpax_](https://twitter.com/philpax_)
+            - Mastodon: [@philpax@mastodon.gamedev.place](https://mastodon.gamedev.place/@philpax)
+
+            Primary maintainer of:
+            - the Ambient Runtime
+            - llm.rs
+
+            Note:
+            First off, let me introduce myself. My name's Mithun, but I go by Philpax online. You can find me on Twitter or Mastodon here.
+
+            I'm a Senior Engineer at Ambient, which is a startup looking to advance Rust gamedev. Before Ambient, I worked at Avalanche Studios as a triple-A gamedev.
+
+            In my free time, I work on open-source AI, including llm.rs, a Rust library for using large language models locally.
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            # Here's the plan
+
+            Note:
+            I have to admit something to you before we start: we're not currently working on the runtime. Cool technology doesn't always make a cool product.
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            # What is Ambient?
+
+            Note:
+            So, what is the Ambient runtime?
+
+            Multiplayer game development is challenging.
+            Most of the existing solutions are lacking in some way:
+            they don't support multiplayer, they aren't cross-platform, or they limit the developer's creativity.
+
+            We wanted to solve this problem and make it easy for people to build multiplayer games.
+          </textarea>
+        </section>
+        <section
+          data-background-video="media/dims.mp4"
+          data-background-video-loop
+          data-background-video-muted
+        >
+          <aside class="notes">
+            Of course, that took a few tries. What you're seeing here is our
+            first attempt to solve multiplayer game development. This is Dims, a
+            collaborative low-code game development platform, also built in
+            Rust. You can build worlds and hang out together. Worlds aren't
+            games, though. To bring them to life, we decided to let you script
+            your games with WebAssembly. And then we realised it was becoming
+            something else entirely.
+          </aside>
+        </section>
+        <section>
+          <div style="text-align: center">
+            <img
+              src="media/logo.svg"
+              alt="Ambient"
+              style="height: 140px; margin: 0 auto; margin-top: 60px"
+            />
+          </div>
+          <div style="display: flex; align-items: center">
+            <div
+              style="flex: 0 0 50%; display: flex; justify-content: flex-end"
+            >
+              <ul
+                style="
+                  list-style: none;
+                  text-align: right;
+                  font-size: 1.2em;
+                  margin: 0;
+                  margin-right: 20px;
+                  padding: 0;
+                "
+              >
+                <li>Open-source</li>
+                <li>Multiplayer-first</li>
+                <li>Cross-platform</li>
+                <li>WebAssembly</li>
+                <li>Web support</li>
+                <li>Package-centric workflow</li>
+              </ul>
+            </div>
+            <div style="flex: 0 0 50%">
+              <img
+                src="media/screenshot.png"
+                style="width: 100%; height: auto"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            We took the core of Dims, cleaned it up, and open-sourced it to
+            create Ambient. Once that was done, we then added a package manager,
+            ported it to the web, and built a cloud platform around it. That is
+            to say: Ambient is a modern open-source multiplayer-first
+            cross-platform game runtime with WebAssembly-based scripting, web
+            support, and a package-centric workflow. All of this is backed by a
+            cloud platform, the "Ambient Platform", that allows users to build,
+            publish, play and share packages and games.
+          </aside>
+        </section>
+        <section>
+          <div
+            style="
+              position: relative;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 100%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                font-size: 1.5em;
+                line-height: 1.5;
+              "
+            >
+              <li>Game server</li>
+              <li>Desktop client</li>
+              <li>Web client</li>
+              <li>Scripting</li>
+              <li>Build automation</li>
+              <li>Cloud services</li>
+              <li>Website</li>
+            </ul>
+            <div
+              class="fragment"
+              style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10;
+              "
+            >
+              <img
+                src="media/rustacean.png"
+                style="width: 60%; opacity: 0.6"
+                alt="Rustacean"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            And of course, all of this is written in Rust. And I mean *all* of
+            it. The game server? The desktop client? The web client? The
+            scripting? The build automation? The cloud services? The website?
+            *click* The crab comes for us all. Today, I'll primarily be talking
+            about the runtime. The website was written in Dioxus, but that's a
+            talk for another day!
+          </aside>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Why Rust?
+
+            <div>
+              <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; text-align: center;">
+                <li>Performance</li>
+                <li>Modern features</li>
+                <li>Cross-platform code</li>
+                <li>General-purpose use</li>
+                <li>Code sharing</li>
+              </ul>
+            </div>
+
+            Note:
+            A game engine requires performance, and the typical answer is C++. But we chose Rust.
+
+            We wanted a safe and performant language with modern conveniences.
+            We wanted the tooling: cargo, clippy, rustfmt
+            We wanted native support for concurrency and parallelism
+            We wanted a rich, reliable package ecosystem
+            We wanted to confidently refactor code with ease
+            And we wanted a strong type system, including enums, traits, and more, all backed by the borrow checker
+
+            Of course, these also make it much easier to write cross-platform code, especially with Rust crates:
+            99.999% of our code was the same between Windows, macOS and Linux.
+
+            Rust is also a fantastic general-purpose language, which is why we used it for everything else.
+            This allowed us to easily share code and do more with less.
+          </textarea>
+        </section>
+        <section>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              height: 100%;
+              align-items: center;
+            "
+          >
+            <div style="flex: 1">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.6em;
+                  padding: 0;
+                  margin: 0;
+                  font-size: 1.4em;
+                  text-align: center;
+                  line-height: 1.2;
+                "
+              >
+                <div>ECS</div>
+                <div>Physically-based rendering</div>
+                <div>Asset pipeline</div>
+                <div>WASM scripting</div>
+                <div>Dynamically-loaded packages</div>
+              </div>
+            </div>
+            <div style="flex: 1">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.6em;
+                  padding: 0;
+                  margin: 0;
+                  font-size: 1.4em;
+                  text-align: center;
+                  line-height: 1.2;
+                "
+              >
+                <div>Spatial audio</div>
+                <div>Character animation</div>
+                <div>PhysX</div>
+                <div>React-like UI</div>
+                <div>Web support</div>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Now, let's talk features. We're a batteries-included runtime, so we
+            made sure our engine had everything you might need to build a game,
+            as you can see here. The most innovative items on this list are the
+            packages, WASM scripting, and web support. Let's start with the
+            packages.
+          </aside>
+        </section>
+        <section>
+          <h2 style="font-size: 1.8em">
+            Packages: Rust crates, but for gamedev?
+          </h2>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 45%">
+              <p>What can you do when you make your ECS dynamic?</p>
+              <p>What does the ultimate moddable game platform look like?</p>
+            </div>
+            <div style="flex: 0 0 55%">
+              <pre><code style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" class="language-toml" data-trim data-noescape>
+[package]
+id = "jkr622pbesmaco76bjc6116v4t41ajh"
+name = "Screen Ray"
+
+[messages.Input.fields]
+ray_origin = "Vec3"
+ray_dir = "Vec3"
+spawn = "Bool"
+
+[components.player_cube_ref]
+name = "Player Cube Ref"
+description = "Attached to the player; references the preview cube the player is controlling."
+type = "EntityId"
+attributes = ["Networked", "Debuggable"]
+
+[dependencies]
+orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            Like many modern game engines, we use an entity component system —
+            an ECS — in which entities have components, which are pieces of
+            data, and these entities and their components are acted upon by
+            systems. However, we wanted to go a step further. I grew up with
+            Garry's Mod, where you could load code and assets at runtime to
+            extend the game experience. We wanted to build the modern
+            equivalent, which led us to our runtime-loadable packages, which
+            were inspired heavily by Rust crates. These can add new components,
+            bring in new assets, load new WASM modules, and even message each
+            other. And of course, they can depend on other packages.
+          </aside>
+        </section>
+        <section>
+          <h1 class="r-fit-text">Demo time!</h1>
+          <aside class="notes">
+            The best way to demonstrate this is, of course, with a demo. I'm
+            going to do *two* demos. Wish me luck! First up, let's look at an
+            example that uses a package. [third_person_camera code, docs, local
+            demos] Next up, let's look at a moddable game that runs on the web.
+            [tangent join web server native, tangent join with website, fire
+            rain load]
+          </aside>
+        </section>
+        <section>
+          <h2 style="font-size: 1.8em">Using Rust as a Scripting Language</h2>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 50%; font-size: 0.8em; text-align: right">
+              <p>Easy to share code with the host</p>
+              <p>Still complex, even with API hiding complexity</p>
+              <p>Compile-times are not the fastest</p>
+              <p>A bit scary to new users</p>
+              <p>A higher-level Rust would win. Grain?</p>
+            </div>
+            <div style="flex: 0 0 50%">
+              <pre><code style="font-size: 0.55em; white-space: pre-wrap; line-height: 1.2em;" class="language-rust" data-trim data-noescape>
+#[main]
+pub fn main() {
+    Entity::new()
+        .with(quad(), ())
+        .with(scale(), Vec3::ONE * 10.)
+        .with(color(), vec4(1., 0., 0., 1.))
+        .with(plane_collider(), ())
+        .spawn();
+
+    Entity::new()
+        .with_merge(Sphere::suggested())
+        .with(sphere_collider(), 0.5)
+        .with(translation(), vec3(5., 5., 1.))
+        .spawn();
+
+    spawn_query(is_player()).bind(move |players| {
+        for (id, _) in players {
+            entity::add_components(
+                id,
+                Entity::new()
+                    .with_merge(ThirdPersonController::suggested())
+                    .with(camera_distance(), 0.0),
+            );
+        }
+    });
+}
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            As you might have noticed in the demo, we use Rust as our scripting
+            language. This is made possible through WebAssembly - more on that
+            later. We liked using Rust for scripting, and it let us share a lot
+            of code, which was fantastic for when we were changing things
+            around. However, the language is still somewhat complex, even
+            despite our API's efforts to simplify it. The compile times are OK,
+            but not fantastic: game developers appreciate fast iteration times,
+            and Rust doesn't always provide that. We also had a concern that the
+            use of Rust might scare off potential users; we found that users
+            were fine with it once they got used to it, but it was definitely a
+            barrier to entry. We think a slightly higher-level language would be
+            better for this use case, but we're not sure what that would look
+            like. Perhaps Grain, which is a ML-like targeting WebAssembly
+          </aside>
+        </section>
+        <section>
+          <h2>Extreme Code Generation</h2>
+          <h3 style="margin-bottom: 0">Data model</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 40%">
+              <p>Package definitions in TOML</p>
+              <p>Definitions need to be used in code</p>
+            </div>
+            <div style="flex: 0 0 60%">
+              <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1.2em;" class="language-toml" data-trim data-noescape>
+[package]
+name = "Camera"
+description = "Camera matrices, types, parameters, and more."
+content = { type = "Asset", schema = true }
+version = "0.3.2-dev"
+ambient_version = "0.3.2-nightly-2023-12-21"
+
+[components.active_camera]
+type = "F32"
+name = "Active camera"
+description = """
+The camera with the highest `active_camera` value will be used for rendering. Cameras are also filtered by the `user_id`.
+If there's no `user_id`, the camera is considered global and potentially applies to all users (if its `active_camera` value is high enough)."""
+attributes = ["Debuggable", "Networked", "Store"]
+
+[components.aspect_ratio]
+type = "F32"
+name = "Aspect ratio"
+description = """
+The aspect ratio of this camera.
+If `aspect_ratio_from_window` is set, this will be automatically updated to match the window."""
+attributes = ["Debuggable", "Networked", "Store"]
+
+[components.aspect_ratio_from_window]
+type = "EntityId"
+name = "Aspect ratio from window"
+description = "If attached, the `aspect_ratio` component will be automatically updated to match the aspect ratio of the window. Should point to an entity with a `window_physical_size` component."
+attributes = ["Debuggable", "Networked", "Store"]
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            Next up, let's talk about some code generation we do. As you saw
+            before, our packages define components in their TOML files. The core
+            Ambient definitions are also a package; you can see an example of
+            that here. Of course, both engine code and guest code need access to
+            the things defined by packages. That's where the code generation
+            comes in.
+          </aside>
+        </section>
+        <section>
+          <h2>Extreme Code Generation</h2>
+          <h3 style="margin-bottom: 0">Semantic analysis</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 40%">
+              <p>Semantic system as library</p>
+              <p>Can be used by both the engine and guest</p>
+            </div>
+            <div style="flex: 0 0 60%">
+              <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1.2em;" class="language-rust" data-trim data-noescape>
+scope:ambient_core::camera (Ambient)
+  imports:
+  component:ambient_core::camera::active_camera (Ambient)
+    type: type:F32 (System)
+    name: "Active camera"
+    description: "The camera with the highest `active_camera` value will be used for rendering. Cameras are also filtered by the `user_id`.\nIf there's no `user_id`, the camera is considered global and potentially applies to all users (if its `active_camera` value is high enough)."
+    default: None
+    attributes:
+      attribute:Debuggable (System)
+      attribute:Networked (System)
+      attribute:Store (System)
+  component:ambient_core::camera::aspect_ratio (Ambient)
+    type: type:F32 (System)
+    name: "Aspect ratio"
+    description: "The aspect ratio of this camera.\nIf `aspect_ratio_from_window` is set, this will be automatically updated to match the window."
+    default: None
+    attributes:
+      attribute:Debuggable (System)
+      attribute:Networked (System)
+      attribute:Store (System)
+  component:ambient_core::camera::aspect_ratio_from_window (Ambient)
+    type: type:EntityId (System)
+    name: "Aspect ratio from window"
+    description: "If attached, the `aspect_ratio` component will be automatically updated to match the aspect ratio of the window. Should point to an entity with a `window_physical_size` component."
+    default: None
+    attributes:
+      attribute:Debuggable (System)
+      attribute:Networked (System)
+      attribute:Store (System)
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            These definitions are consumed by our semantic system, which will
+            then unify them and determine how all of the packages are linked
+            together. Our semantic system is just a library, so it can be used
+            by the engine at runtime and by guest code at build time. You can
+            see an example of what the system outputs here.
+          </aside>
+        </section>
+        <section>
+          <h2>Extreme Code Generation</h2>
+          <h3 style="margin-bottom: 0">Generation</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 40%">
+              <div style="font-size: 0.7em">
+                <p>Semantic -> Rust code</p>
+                <p>Build scripts > Proc macros</p>
+                <p><code>src</code>, not <code>OUT_DIR</code></p>
+              </div>
+            </div>
+            <div style="flex: 0 0 60%">
+              <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1em;" class="language-rust" data-trim data-noescape>
+                pub mod h3gv2vnpcajq75woh5miemeahfpaku4 {
+                  pub fn entity() -&gt; ambient_api::global::EntityId {
+                    use ambient_api::once_cell::sync::Lazy;
+                    static ENTITY: Lazy&lt;ambient_api::global::EntityId&gt; = Lazy::new(|| {
+                        ambient_api::package::get_entity_for_package_id(&quot;h3gv2vnpcajq75woh5miemeahfpaku4&quot;)
+                            .expect(&quot;Failed to get package entity - was it despawned?&quot;)
+                    });
+                    *ENTITY
+                  }
+
+                  #[doc = &quot; Auto-generated component definitions.&quot;]
+                  pub mod components {
+                    use ambient_api::{
+                        ecs::{Component, __internal_get_component},
+                        once_cell::sync::Lazy,
+                        prelude::*,
+                    };
+
+                    static PLAYER_MOVEMENT_DIRECTION: Lazy&lt;Component&lt;F32&gt;&gt; = Lazy::new(|| {
+                        __internal_get_component(
+                            &quot;h3gv2vnpcajq75woh5miemeahfpaku4::player_movement_direction&quot;,
+                        )
+                    });
+
+                    #[doc = &quot;**Player Movement Direction**: Direction of player movement&quot;]
+                    pub fn player_movement_direction() -&gt; Component&lt;F32&gt; {
+                        *PLAYER_MOVEMENT_DIRECTION
+                    }
+
+                    static TRACK_AUDIO_URL: Lazy&lt;Component&lt;String&gt;&gt; = Lazy::new(|| {
+                        __internal_get_component(&quot;h3gv2vnpcajq75woh5miemeahfpaku4::track_audio_url&quot;)
+                    });
+
+                    #[doc = &quot;**Track Audio URL**: URL of the track audio\n\n*Attributes*: Networked, Debuggable&quot;]
+                    pub fn track_audio_url() -&gt; Component&lt;String&gt; {
+                        *TRACK_AUDIO_URL
+                    }
+                  }
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            Once it's in that representation, it's easy enough to emit Rust code
+            for it. We initially used procedural macros for this, but we
+            switched to build scripts because rust-analyzer struggled and our
+            users appreciated being able to see the generated code. These files
+            are placed in `src`, not `OUT_DIR`, to make it easier to see. This
+            is not recommended, but it seems to work. Essentially, we've added
+            another stage to the Rust compilation process to integrate the
+            Ambient interface definition language. This is not unlike Pavex from
+            yesterday.
+          </aside>
+        </section>
+        <section>
+          <h2>Workflow</h2>
+          <h3>that's a lot of windows</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Lots of moving parts</li>
+              <li>Workspaces aren't perfect</li>
+              <li>rust-analyzer only uses one workspace</li>
+              <li>Five contexts, five windows!</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            If you've been keeping count, you'll have noticed that we have a lot
+            of moving parts. Rust workspaces do a pretty good job of grouping
+            together packages, but they don't support cross-toolchain packages
+            (that is, mixing desktop and WASM), and they don't support nesting.
+            rust-analyzer works with the workspace you have in the directory
+            you've opened in your IDE. This means that we could have up to five
+            VS Code windows open: the native client, web client, guest code,
+            cloud services, and the website. That's obviously a bit of a
+            struggle.
+          </aside>
+        </section>
+        <section>
+          <h2>Workflow</h2>
+          <h3>Automation</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 50%">
+              <p>cargo-xtask pattern:</p>
+              <p>
+                <a
+                  href="https://github.com/matklad/cargo-xtask"
+                  style="font-size: 0.8em"
+                  >https://github.com/matklad/cargo-xtask</a
+                >
+              </p>
+              <p>Rust tool, campfire, to make common operations easy to do</p>
+              <p>Well worth it</p>
+            </div>
+            <div style="flex: 0 0 50%">
+              <pre><code style="font-size: 0.5em; white-space: pre-wrap; line-height: 1.2em;" class="language-bash">
+Ambient # cargo cf --help
+Finished dev [unoptimized + debuginfo] target(s) in 0.66s
+Running `target/debug/campfire --help`
+
+Usage: campfire &lt;COMMAND&gt;
+
+Commands:
+  doc            Generate documentation for Ambient
+  package        Package-related functionality
+  golden-images  Running golden image tests
+  release        Release-related functionality
+  install        Helper to install specific versions of Ambient
+  join           Helper to join a server by various means
+  web            Web-related functionality
+  clean          Clean all build artifacts for all packages
+  run            Run a package. Alias for `package run`
+  serve          Serve a package. Alias for `package serve`
+  help           Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            To help with this, we used the `cargo-xtask` pattern. We built a
+            tool in Rust in our root workspace, `campfire`, that could handle
+            meta-development tasks like building all of the clients, updating
+            package versions, deploying the packages, and more. This was then
+            aliased using `cargo/config.toml` to make it easy to access. This
+            was an upfront cost, but it paid for itself many times over,
+            especially as we were targeting Windows, Linux, macOS and the web.
+          </aside>
+        </section>
+        <section>
+          <h2>Workflow</h2>
+          <h3>Testing</h3>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 80%;
+              width: 80%;
+              margin: 0 auto;
+            "
+          >
+            <div style="flex: 0 0 50%">
+              <p>Golden image tests</p>
+              <p>Software rendering for CI</p>
+              <p>Still brittle</p>
+            </div>
+            <div
+              style="
+                flex: 0 0 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <img
+                src="media/testing.png"
+                alt="Golden image test example"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            For testing, our primary solution was the use of golden image tests:
+            we would run a test case, wait a few seconds, take a screenshot, and
+            compare it to a reference image. Using software rendering, we were
+            able to run this in our CI. This worked pretty well, but it had some
+            drawbacks: Software rendering is very slow and unstable And the
+            tests were still brittle due to networking, rendering, timing and
+            randomness issues We considered more complex tests and using a
+            GPU-based CI runner, but we didn't have the time to implement them.
+          </aside>
+        </section>
+        <section>
+          <h1 class="r-fit-text">So what went wrong?</h1>
+          <aside class="notes">
+            So now it's time to discuss the elephant in the room: what went
+            wrong?
+          </aside>
+        </section>
+        <section>
+          <h2>TOML isn't good for everything</h2>
+          <pre><code style="font-size: 0.7em; text-wrap: balance; line-height: 1.2em;" class="language-toml" data-trim data-noescape>
+[components]
+height_offset = { type = "F32", name = "Nameplate Height Offset",
+description = "The height offset from the base of this entity at which to render a nameplate. If not specified, it will default to this entity's local bounding AABB Z, and if that's not available, it will default to a constant.", attributes = [
+    "Debuggable",
+    "Networked",
+] }
+
+text_size = { type = "F32", name = "Nameplate Text Size", description = "The text size of the nameplate to render. If not specified, it will default to 2.0.", attributes = [
+    "Debuggable",
+    "Networked",
+] }
+
+hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to a player, hide the nameplate for that player.", attributes = [
+    "Networked",
+    "Debuggable",
+] }
+          </code></pre>
+          <aside class="notes">
+            First off, a fairly surface-level thing: our packages are defined
+            with TOML. Unfortunately, TOML gets quite ugly for complex
+            structures, especially because TOML 1.0 can't do multi-line
+            literals. I wanted to do a domain-specific language for defining
+            your schema, but there just wasn't enough time.
+          </aside>
+        </section>
+        <section>
+          <h2>Building your own engine is unwise</h2>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Small team with limited resources</li>
+              <li>Untouched parts of the engine</li>
+              <li>Building an ecosystem is hard</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            If you've talked to any game developer, you'll have heard the
+            standard advice: don't build your own engine. Rust solves many
+            problems, but it doesn't solve that one. We are a small team of less
+            than 10 with limited resources, and building an engine from scratch
+            is a huge undertaking. We were able to innovate in ways that
+            existing engines couldn't, but everything else suffered. There are
+            parts of our engine that saw no love for months, sometimes years. On
+            top of that, we were also building an ecosystem, which meant we were
+            constantly updating the documentation, examples, platform, and more.
+            Was it fun? Yes! Was it sustainable? Maybe not.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>Reality</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Different constraints</li>
+              <li>Limited API support</li>
+              <li>Performance discrepancies</li>
+              <li>Debugging difficulties</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            The web is a different beast. It has different constraints,
+            different APIs, and different performance constraints. Many of the
+            assumptions we'd made about the desktop didn't hold up on the web.
+            Support for the latest APIs is *not* universal; Chrome was the only
+            browser that supported everything we used, and it didn't support
+            them on Linux. WebAssembly goes a long way towards shrinking the
+            discrepancy in performance between web and desktop, but there is
+            still a gap. Multithreading on the web is still very much a work in
+            progress. Debugging is very difficult, especially with async code.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>System</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>wasm32-unknown-unknown is a lie</li>
+              <li>wasm-bindgen and web-sys give you your system APIs</li>
+              <li>Tokio doesn't fully work on the web</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            So, to be more specific, let's dig into the troubles we faced.
+            First, the platform itself: wasm32-unknown-unknown, the standard
+            Rust target for WASM on the web, is a convenient lie we tell
+            ourselves. Much of the standard library will panic at runtime, and
+            many APIs are missing. You must use `wasm-bindgen` and `web-sys` to
+            interact with the JS APIs and replace that missing functionality.
+            Our existing code targeted Tokio, which has limited support for
+            running on the web. Additionally, you don't control task scheduling
+            on the web, unlike on desktop.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>System abstraction</h3>
+          <div style="display: flex; align-items: center">
+            <div style="flex: 0 0 70%">
+              <p>Time to write our own system abstraction!</p>
+              <p>Async tasks, timing, file I/O, clipboard, more</p>
+              <p>clippy and cargo-deny useful</p>
+            </div>
+            <div style="flex: 0 0 30%">
+              <img
+                src="media/ambient_sys.png"
+                alt="Ambient system abstraction"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            To fix this, we needed to write our own system abstraction that
+            smoothed over the differences between the desktop and the web. This
+            abstraction covered: - async tasks - timing - file I/O - the
+            clipboard - and more We had to make sure that any code that could
+            potentially run on the web used this abstraction. We used `clippy`
+            and `cargo-deny` to help with this, but we still ran into plenty of
+            cases where code would panic at runtime.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>WebGPU</h3>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 70%;
+              gap: 1em;
+            "
+          >
+            <img src="media/wgpu.png" alt="wgpu logo" style="height: 240px" />
+            <div style="font-size: 3em">is not</div>
+            <img
+              src="media/webgpu.png"
+              alt="WebGPU logo"
+              style="height: 240px"
+            />
+          </div>
+          <aside class="notes">
+            Next up, graphics. From the start, we have been using `wgpu`, which
+            is a fantastic abstraction over the various graphics APIs, including
+            WebGPU. We wanted a relatively modern look, and we wanted to be able
+            to use the same code on both the web and desktop. We were under the
+            impression that using it would make porting to the web using WebGPU
+            straightforward. It *did* make it easier, but, well, they're not the
+            same thing.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>WebGPU problems</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Bind group count</li>
+              <li>Extensions</li>
+              <li>Browser compatibility</li>
+              <li>Spec interpretation</li>
+              <li>Debugging</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            Let's quickly go over the problems we encountered. Our renderer was
+            designed around having many bind groups, and we had to partially
+            redesign it when we discovered WebGPU only supports a few bind
+            groups at a time. We relied on extensions that aren't present on the
+            web. We expected this, but it still hurt. WebGPU support across
+            browsers is basically limited to Windows/Mac Chrome. There is no
+            support for Linux or any other non-Chromium browsers, like Firefox.
+            Each browser has a slightly different interpretation of the spec,
+            and their interpretation can differ from wgpu's native
+            implementation, including in how they compile shaders. Debugging is
+            very difficult - the standard tools don't work, and you're not
+            debugging WebGPU, you're debugging your browser's implementation of
+            WebGPU.
+          </aside>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
