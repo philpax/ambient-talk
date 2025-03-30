@@ -998,6 +998,59 @@ ambient_ecs.workspace = true
             WebGPU.
           </aside>
         </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>WebGPU conclusion</h3>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+              gap: 1em;
+              margin-top: 2em;
+            "
+          >
+            <div>We should have used WebGL.</div>
+            <div>WebGPU's just not there yet.</div>
+          </div>
+          <aside class="notes">
+            The port we'd budgeted two weeks for ended up being two months long,
+            and it doesn't work for a sizeable fraction of our audience. In
+            hindsight, we should have targeted WebGL at the cost of graphical
+            fidelity. We wanted to bring native-like rendering to the web, but
+            it's just not there yet.
+          </aside>
+        </section>
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>WebTransport</h3>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+              gap: 1em;
+              margin-top: 2em;
+            "
+          >
+            <div>Networking with quinn, which implements QUIC</div>
+            <div>QUIC ≈ WebTransport?</div>
+          </div>
+          <aside class="notes">
+            For networking, we used the `quinn` library, which implements the
+            QUIC protocol. QUIC is a fantastic protocol that provides secure
+            reliable and unreliable data streams, making it perfect for us.
+            WebTransport is a sibling protocol of QUIC that shares a great deal
+            with it, and the majority of browsers have native client support for
+            it. We assumed that having the web client use WebTransport to
+            connect to the server would be straightforward. Unfortunately, just
+            like with WebGPU, it's not quite the same thing.
+          </aside>
+        </section>
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
