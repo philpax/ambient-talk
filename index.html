@@ -79,19 +79,15 @@
         </section>
 
         <!-- Introduction to Ambient slide -->
-        <section data-markdown>
-          <textarea data-template>
-            # What is Ambient?
-
-            Note:
-            So, what is the Ambient runtime?
-
-            Multiplayer game development is challenging.
-            Most of the existing solutions are lacking in some way:
-            they don't support multiplayer, they aren't cross-platform, or they limit the developer's creativity.
-
-            We wanted to solve this problem and make it easy for people to build multiplayer games.
-          </textarea>
+        <section>
+          <h1>What is Ambient?</h1>
+          <aside class="notes">
+            So, what is the Ambient runtime? Multiplayer game development is
+            challenging. Most of the existing solutions are lacking in some way:
+            they don't support multiplayer, they aren't cross-platform, or they
+            limit the developer's creativity. We wanted to solve this problem
+            and make it easy for people to build multiplayer games.
+          </aside>
         </section>
 
         <!-- Video background slide showing Dims project -->
@@ -221,38 +217,47 @@
             talk for another day!
           </aside>
         </section>
-
         <!-- Slide explaining why Rust was chosen -->
-        <section data-markdown>
-          <textarea data-template>
-            ## Why Rust?
-
-            <div>
-              <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; text-align: center;">
-                <li>Performance</li>
-                <li>Modern features</li>
-                <li>Cross-platform code</li>
-                <li>General-purpose use</li>
-                <li>Code sharing</li>
-              </ul>
-            </div>
-
-            Note:
-            A game engine requires performance, and the typical answer is C++. But we chose Rust.
-
-            We wanted a safe and performant language with modern conveniences.
-            We wanted the tooling: cargo, clippy, rustfmt
-            We wanted native support for concurrency and parallelism
-            We wanted a rich, reliable package ecosystem
-            We wanted to confidently refactor code with ease
-            And we wanted a strong type system, including enums, traits, and more, all backed by the borrow checker
-
-            Of course, these also make it much easier to write cross-platform code, especially with Rust crates:
-            99.999% of our code was the same between Windows, macOS and Linux.
-
-            Rust is also a fantastic general-purpose language, which is why we used it for everything else.
-            This allowed us to easily share code and do more with less.
-          </textarea>
+        <section>
+          <h2>Why Rust?</h2>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Performance</li>
+              <li>Modern features</li>
+              <li>Cross-platform code</li>
+              <li>General-purpose use</li>
+              <li>Code sharing</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            A game engine requires performance, and the typical answer is C++.
+            But we chose Rust. We wanted a safe and performant language with
+            modern conveniences. We wanted the tooling: cargo, clippy, rustfmt
+            We wanted native support for concurrency and parallelism We wanted a
+            rich, reliable package ecosystem We wanted to confidently refactor
+            code with ease And we wanted a strong type system, including enums,
+            traits, and more, all backed by the borrow checker Of course, these
+            also make it much easier to write cross-platform code, especially
+            with Rust crates: 99.999% of our code was the same between Windows,
+            macOS and Linux. Rust is also a fantastic general-purpose language,
+            which is why we used it for everything else. This allowed us to
+            easily share code and do more with less.
+          </aside>
         </section>
 
         <!-- Two-column slide listing engine features -->
