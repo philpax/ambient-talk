@@ -21,49 +21,61 @@
     <div class="reveal">
       <div class="slides">
         <!-- Title slide with main heading and subtitle -->
-        <section data-markdown>
-          <textarea data-template>
-            ## A Post-Mortem On Ambient
-
-            #### What <em>Was</em> A Rust/WebAssembly Runtime for Cross-Platform Multiplayer Games
-
-            Mithun Hunsur ([philpax.me](https://philpax.me))
-
-            Note:
-            G'day everyone, I'm here to talk to you about Ambient, the open-source cross-platform multiplayer game runtime that we built over the last two years.
-          </textarea>
+        <section>
+          <h2>A Post-Mortem On Ambient</h2>
+          <h4>
+            What <em>Was</em> A Rust/WebAssembly Runtime for Cross-Platform
+            Multiplayer Games
+          </h4>
+          <p>Mithun Hunsur (<a href="https://philpax.me">philpax.me</a>)</p>
+          <aside class="notes">
+            G'day everyone, I'm here to talk to you about Ambient, the
+            open-source cross-platform multiplayer game runtime that we built
+            over the last two years.
+          </aside>
         </section>
 
         <!-- Speaker introduction slide with contact info and projects -->
-        <section data-markdown>
-          <textarea data-template>
-            ## Who am I?
-
-            Mithun Hunsur, Senior Engineer @ Ambient
-            - Twitter: [@philpax_](https://twitter.com/philpax_)
-            - Mastodon: [@philpax@mastodon.gamedev.place](https://mastodon.gamedev.place/@philpax)
-
-            Primary maintainer of:
-            - the Ambient Runtime
-            - llm.rs
-
-            Note:
-            First off, let me introduce myself. My name's Mithun, but I go by Philpax online. You can find me on Twitter or Mastodon here.
-
-            I'm a Senior Engineer at Ambient, which is a startup looking to advance Rust gamedev. Before Ambient, I worked at Avalanche Studios as a triple-A gamedev.
-
-            In my free time, I work on open-source AI, including llm.rs, a Rust library for using large language models locally.
-          </textarea>
+        <section>
+          <h2>Who am I?</h2>
+          <div>
+            <p>Mithun Hunsur, Senior Engineer @ Ambient</p>
+            <ul>
+              <li>
+                Twitter: <a href="https://twitter.com/philpax_">@philpax_</a>
+              </li>
+              <li>
+                Mastodon:
+                <a href="https://mastodon.gamedev.place/@philpax"
+                  >@philpax@mastodon.gamedev.place</a
+                >
+              </li>
+            </ul>
+            <p>Primary maintainer of:</p>
+            <ul>
+              <li>the Ambient Runtime</li>
+              <li>llm.rs</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            First off, let me introduce myself. My name's Mithun, but I go by
+            Philpax online. You can find me on Twitter or Mastodon here. I'm a
+            Senior Engineer at Ambient, which is a startup looking to advance
+            Rust gamedev. Before Ambient, I worked at Avalanche Studios as a
+            triple-A gamedev. In my free time, I work on open-source AI,
+            including llm.rs, a Rust library for using large language models
+            locally.
+          </aside>
         </section>
 
         <!-- Simple slide with just a heading for transition -->
-        <section data-markdown>
-          <textarea data-template>
-            # Here's the plan
-
-            Note:
-            I have to admit something to you before we start: we're not currently working on the runtime. Cool technology doesn't always make a cool product.
-          </textarea>
+        <section>
+          <h1>Here's the plan</h1>
+          <aside class="notes">
+            I have to admit something to you before we start: we're not
+            currently working on the runtime. Cool technology doesn't always
+            make a cool product.
+          </aside>
         </section>
 
         <!-- Introduction to Ambient slide -->
