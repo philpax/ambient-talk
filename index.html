@@ -954,12 +954,12 @@ ambient_ecs.workspace = true
           <h2>Porting the runtime to the web</h2>
           <h3>System</h3>
           <div style="display: flex; align-items: center">
-            <div style="flex: 0 0 70%">
+            <div style="flex: 0 0 75%">
               <p>Time to write our own system abstraction!</p>
               <p>Async tasks, timing, file I/O, clipboard, more</p>
               <p>clippy and cargo-deny useful</p>
             </div>
-            <div style="flex: 0 0 30%">
+            <div style="flex: 0 0 25%">
               <img
                 src="media/ambient_sys.png"
                 alt="Ambient system abstraction"
@@ -1110,6 +1110,590 @@ ambient_ecs.workspace = true
             connect to the server would be straightforward. Unfortunately, just
             like with WebGPU, it's not quite the same thing.
           </aside>
+        </section>
+
+        <!-- Two-column layout with text and image -->
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>WebTransport</h3>
+          <div style="display: flex; align-items: center">
+            <div style="flex: 0 0 60%">
+              <p>QUIC ≈ WebTransport</p>
+              <p>⇏</p>
+              <p>QUIC = WebTransport</p>
+            </div>
+            <div style="flex: 0 0 40%">
+              <img
+                src="media/h3-issue.png"
+                alt="h3 issue"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            WebTransport is a separate protocol from QUIC, and it has its own
+            API. There was no existing support for WebTransport on the server in
+            Rust, so we worked with Dario, an open-source contributor, to add
+            WebTransport support to `h3`. As you might imagine, this took a
+            while. We also had to add a WebTransport backend to our client, but
+            as `quinn` and the WebTransport JS APIs are relatively similar, this
+            wasn't too bad.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Porting the runtime to the web</h2>
+          <h3>Performance</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>
+                Networking, rendering and logic all run on the same thread!
+              </li>
+              <li>Messages dropped</li>
+              <li>Scripting overhead</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            After all this, though, we discovered that networking, rendering and
+            logic all run on the same thread on the web - remember, no
+            multithreading - which meant that messages would be dropped if the
+            client was too busy. Much of this came from our WASM scripting
+            solution having severe overhead in a web environment. More on that
+            in the next slide. This was catastrophic, and we added a few
+            workarounds - including dropping frames to allow networking to catch
+            up - but we don’t have a general solution for it yet.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+              gap: 1em;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Game engines usually use Lua or such</li>
+              <li>But how do you support many languages?</li>
+              <li>Let’s try</li>
+            </ul>
+
+            <img
+              src="media/wasm.png"
+              alt="WebAssembly logo"
+              style="height: 240px"
+            />
+          </div>
+          <aside class="notes">
+            Let's move on to the scripting side of things. I've built my fair
+            share of scriptable applications, and I've typically done this with
+            Lua or other languages amenable to embedding. A problem that I've
+            always encountered while doing so, however, is that you're locked
+            into whatever language you've embedded. The only way to add more
+            languages is to add more interpreters, which is very cumbersome.
+            This time around, we decided to use WebAssembly for scripting, which
+            is a language-independent bytecode format. Despite what the name
+            suggests, it can be used outside of the web! In theory, we could use
+            any language that compiles to WebAssembly, and we could have Rust as
+            a first-class guest language. In practice, it was a bit more
+            complicated.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>How?</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+              gap: 1em;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>On the web, just use the browser</li>
+              <li>On native, you need an interpreter</li>
+              <li>Let’s go with Wasmtime</li>
+              <li>Bindings?</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            First problem, how do you actually run WebAssembly? On the web, you
+            can just use the browser's WebAssembly runtime - at least in theory
+            - but we needed a way to run it natively. There are a couple of
+            interpreters, but we chose the Bytecode Alliance’s Wasmtime for this
+            as it has a JIT compiler, natively supports Rust, and is at the
+            forefront of WASM development. In doing so, however, we discovered
+            our second problem: how do you bind Rust types to WebAssembly, which
+            only has a C-like ABI?
+          </aside>
+        </section>
+
+        <!-- Two-column layout with text and code -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>wit-bindgen</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 60%">
+              <p>Bytecode Alliance has us covered with wit-bindgen.</p>
+              <p>Well, sort of</p>
+              <p>WIT only supports so much</p>
+            </div>
+            <div style="flex: 0 0 40%">
+              <pre><code class="language-wit" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+interface entity {
+  use types.{entity-id, vec3, quat, mat4}
+  use component.{entity as entity-data}
+
+  get-transforms-relative-to: func(
+    entities: list&lt;entity-id&gt;, origin: entity-id
+  ) -&gt; list&lt;mat4&gt;
+
+  spawn: func(data: entity-data) -&gt; entity-id
+  despawn: func(entity: entity-id) -&gt; option&lt;entity-data&gt;
+  in-area: func(position: vec3, radius: float32) -&gt; list&lt;entity-id&gt;
+
+  exists: func(entity: entity-id) -&gt; bool
+  get-all: func(index: u32) -&gt; list&lt;entity-id&gt;
+  resources: func() -&gt; entity-id
+  synchronized-resources: func() -&gt; entity-id
+  persisted-resources: func() -&gt; entity-id
+}
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            Luckily, the Bytecode Alliance have a solution for this:
+            wit-bindgen. Unluckily, it was still in development when we picked
+            it up, and we discovered that it was part of the greater Component
+            Model proposal, which was still being designed. This meant that we
+            were following a changing implementation and spec, which led to
+            churn on our part. The interface is specified in WIT, which is an
+            interface definition language for the Component Model. It supports a
+            subset of what Rust supports, which meant we had to be careful in
+            how we designed our API.
+          </aside>
+        </section>
+
+        <!-- Two-column layout with text and code -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>wit-bindgen</h3>
+          <div style="display: flex; align-items: center; height: 80%">
+            <div style="flex: 0 0 40%">
+              <p>Still need glue code</p>
+              <p>Data model doesn’t quite align</p>
+              <p>Only a few languages supported</p>
+            </div>
+            <div style="flex: 0 0 60%">
+              <pre><code class="language-rust" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+// Rust implementation of the WIT interface
+pub fn exists(entity: EntityId) -&gt; bool {
+    wit::entity::exists(entity.into_bindgen())
+}
+
+/// Gets all of the entities that have the given &grave;component&grave;.
+pub fn get_all&lt;T&gt;(component: Component&lt;T&gt;) -&gt; Vec&lt;EntityId&gt; {
+    wit::entity::get_all(component.index()).from_bindgen()
+}
+
+/// Gets all of the entities within &grave;radius&grave; of &grave;position&grave;.
+pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
+    wit::entity::in_area(position.into_bindgen(), radius).from_bindgen()
+}
+              </code></pre>
+            </div>
+          </div>
+          <aside class="notes">
+            We had to write glue code in both the host and the guest to wrap the
+            generated WIT code to make it ergonomic to use. In hindsight, we
+            should have considered writing our own binding layer - WIT is great,
+            but it wasn't the right fit for our constraints. Also, wit-bindgen
+            only supports a few languages, and having to write additional glue
+            code effectively limited us to Rust because we didn’t have the time
+            for anything else.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>WebAssembly System Interface</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>wasm32-wasi is less of a lie!</li>
+              <li>We can use it for guest code 😀</li>
+              <li>But we still need to implement it…</li>
+              <li>preview1 != preview2</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            Next up, remember how I mentioned that wasm32-unknown-unknown
+            doesn't implement any system interfaces? Luckily, that’s less of a
+            problem for our guest code; we can use wasm32-wasi, which uses the
+            WebAssembly System Interface. Our engine - the host - can then
+            implement the host side of the interface, so that the guest can use
+            these APIs without a care in the world. Rust supports the first
+            preview of WASI, but our use of the Component Model forced us onto
+            the second preview, which was still in development. This meant we
+            had to use an adapter, and have our own custom implementation of the
+            WASI APIs. The APIs were changing, so this was another source of
+            churn for us.
+          </aside>
+        </section>
+
+        <!-- Single line slide with headers -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>On the web</h3>
+          <p>We can just use the browser's runtime, right?</p>
+          <aside class="notes">
+            Okay, that’s the desktop done. We use wasmtime and wit-bindgen on
+            the desktop, but we don’t need them on the web, right? We can just
+            use the browser’s runtime, right?
+          </aside>
+        </section>
+
+        <!-- Centered image slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>On the web</h3>
+          <img
+            src="media/well-yes-but-actually-no.png"
+            alt="Well yes, but actually no"
+            style="width: 50%; height: auto"
+          />
+          <aside class="notes">Well yes, but actually no.</aside>
+        </section>
+
+        <!-- Two-column layout with text and image -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>On the web</h3>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 80%;
+              width: 80%;
+              margin: 0 auto;
+            "
+          >
+            <div style="flex: 0 0 50%">
+              <p>wasm32-wasi and Component Model don’t exist on the web</p>
+              <p>Luckily, we are not alone</p>
+              <p>Enter wasm-bridge</p>
+            </div>
+            <div
+              style="
+                flex: 0 0 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <img
+                src="media/wasm-bridge.png"
+                alt="wasm-bridge repository"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            Our guest code uses wasm32-wasi and the Component Model, neither of
+            which are supported on the web. We had to add a web backend to our
+            WASM implementation, and then add support for the Component Model to
+            that backend. Native support for components on the web will come,
+            but it doesn't exist yet, so we had to figure out a solution for
+            that. Luckily, another developer, Karel, had already encountered
+            this problem, and built wasm-bridge. We added the missing features
+            required for our use-case to wasm-bridge, which let us run our guest
+            code on the web! We're very grateful for Karel's work on
+            wasm-bridge, and we're happy to have contributed to it.
+          </aside>
+        </section>
+
+        <!-- Two-column layout with text and image -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>On the web</h3>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 80%;
+              width: 80%;
+              margin: 0 auto;
+            "
+          >
+            <div style="flex: 0 0 50%">
+              <p>wasm-bridge uses JCO</p>
+              <p>JCO is JavaScript</p>
+              <p>JavaScript FFI has overhead</p>
+
+              <img src="media/oh-no.png" alt="oh no" style="width: 50%" />
+            </div>
+            <div
+              style="
+                flex: 0 0 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <img
+                src="media/jco.png"
+                alt="jco repository"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+          <aside class="notes">
+            However... wasm-bridge is based upon the Bytecode Alliance's JCO
+            project, which wraps WebAssembly components in a JS object.
+            wasm-bridge wraps the resulting JavaScript code with a Rust
+            interface. The problem with this is that all FFI goes through
+            JavaScript, which is *very* slow. We optimised this as much as we
+            could, but we came to the conclusion that we needed to remove the JS
+            from the equation. This was the main cause of our performance issues
+            on the web.
+          </aside>
+        </section>
+
+        <!-- Two-column layout with text and image -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>On the web</h3>
+          <div style="margin: 0 auto">
+            <p>wasm_component_layer could save us?</p>
+            <img
+              src="media/wasm-component-layer.png"
+              alt="wasm_component_layer"
+              style="width: 50%; display: block; margin: 0 auto"
+            />
+          </div>
+          <aside class="notes">
+            We found Douglas Dwyer's wasm_component_layer, which provides a
+            runtime-agnostic implementation of the Component Model. We started
+            contributing to it to fill in the holes, and we were in the process
+            of switching to it. However, we were unable to complete this before
+            we paused development on Ambient.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>Other issues</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Debugging</li>
+              <li>Module compile time</li>
+              <li>No ability to interpret</li>
+              <li>Other language use</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            There were other issues we encountered with WebAssembly. Debugging
+            is difficult. It's theoretically possible - we had it working
+            outside of Ambient - but we couldn't get it working in Ambient.
+            You're forced to use print debugging. Wasmtime compiles modules as
+            it loads them, which takes time. With many modules, it can stall
+            startup for many seconds, as you saw in the demo. There’s no way to
+            quickly interpret code - you *have* to compile a module. Finally, we
+            never did get around to trying out other languages. This basically
+            means there was no point in using WebAssembly.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>Using WebAssembly for Scripting</h2>
+          <h3>Conclusion</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>There’s certainly promise, but…</li>
+              <li>there are also major problems.</li>
+              <li>Just use a conventional scripting language.</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            In conclusion: WebAssembly shows promise for this use case, but like
+            WebGPU, the pieces still need to come together. You can’t run many
+            scripting-relevant languages on it, binding is difficult, and
+            supporting both desktop and web is very challenging. We’d recommend
+            a conventional scripting language like Lua, Ruby or Python -
+            especially as all of those now have Rust implementations!
+          </aside>
+        </section>
+
+        <!-- Single line title slide -->
+        <section>
+          <h1 class="r-fit-text">Our biggest issue</h1>
+          <aside class="notes">
+            Finally, our biggest issue… is that people just weren’t interested.
+            We built a lot of cool tech, but we couldn’t get people to care. I
+            believe that with enough time, we could have made this work, but we
+            just couldn’t spend that time. Because of this, we’re currently
+            working on something new. I can’t tell you what it is just yet, but
+            I can say that it’s still related to gamedev.
+          </aside>
+        </section>
+
+        <!-- Centered bullet points slide -->
+        <section>
+          <h2>What did we learn?</h2>
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 80%;
+            "
+          >
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>
+                Rust was the right language for this, but “this” was wrong
+              </li>
+              <li>Check in regularly with other projects</li>
+              <li>Implement web support from day one</li>
+              <li>Use conventional scripting</li>
+              <li>Use WebGL over WebGPU</li>
+              <li>Build things people want</li>
+            </ul>
+          </div>
+          <aside class="notes">
+            So, what did we learn from all of this? We are confident that Rust
+            was the right choice for the engine, and we are continuing to use it
+            in our new projects. We just didn’t know what we wanted to build,
+            and we were subject to the limitations of technologies out of our
+            control. By the time Ambient was born, Bevy and other engines were
+            actively developed and were closer to what we needed. We should have
+            investigated how much work it would have been to switch to them. We
+            tried to retroactively add web support, but this should have been a
+            core part of the engine from the beginning. At a minimum, we should
+            have gone with a more conventional scripting language and WebGL over
+            WebAssembly and WebGPU. These are fantastic technologies, but
+            they're just not ready yet: WebAssembly's ecosystem is still
+            maturing, and WebGPU has growing pains. Finally, we needed to meet
+            people where they were. We built all of this cool technology, but we
+            couldn’t convince people to use it. We needed to talk to users first
+            and solve the problems they had, not the problems we thought they
+            had.
+          </aside>
+        </section>
+
+        <!-- Conclusion slide -->
+        <section>
+          <h2>Conclusion and Q&A</h2>
+          <div>
+            <p>ambient.run</p>
+            <p>
+              <a href="https://github.com/AmbientRun/Ambient"
+                >https://github.com/AmbientRun/Ambient</a
+              >
+            </p>
+          </div>
+          <div>
+            <p>Mithun Hunsur</p>
+            <p>@philpax_</p>
+            <p><em>@philpax@mastodon.gamedev.place</em></p>
+          </div>
         </section>
       </div>
     </div>
