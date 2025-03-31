@@ -20,6 +20,7 @@
   <body>
     <div class="reveal">
       <div class="slides">
+        <!-- Title slide with main heading and subtitle -->
         <section data-markdown>
           <textarea data-template>
             ## A Post-Mortem On Ambient
@@ -32,6 +33,8 @@
             G'day everyone, I'm here to talk to you about Ambient, the open-source cross-platform multiplayer game runtime that we built over the last two years.
           </textarea>
         </section>
+
+        <!-- Speaker introduction slide with contact info and projects -->
         <section data-markdown>
           <textarea data-template>
             ## Who am I?
@@ -52,6 +55,8 @@
             In my free time, I work on open-source AI, including llm.rs, a Rust library for using large language models locally.
           </textarea>
         </section>
+
+        <!-- Simple slide with just a heading for transition -->
         <section data-markdown>
           <textarea data-template>
             # Here's the plan
@@ -60,6 +65,8 @@
             I have to admit something to you before we start: we're not currently working on the runtime. Cool technology doesn't always make a cool product.
           </textarea>
         </section>
+
+        <!-- Introduction to Ambient slide -->
         <section data-markdown>
           <textarea data-template>
             # What is Ambient?
@@ -74,6 +81,8 @@
             We wanted to solve this problem and make it easy for people to build multiplayer games.
           </textarea>
         </section>
+
+        <!-- Video background slide showing Dims project -->
         <section
           data-background-video="media/dims.mp4"
           data-background-video-loop
@@ -89,6 +98,8 @@
             something else entirely.
           </aside>
         </section>
+
+        <!-- Ambient logo and feature list slide with two columns -->
         <section>
           <div style="text-align: center">
             <img
@@ -137,6 +148,8 @@
             publish, play and share packages and games.
           </aside>
         </section>
+
+        <!-- Slide showing all components built in Rust with Rustacean overlay -->
         <section>
           <div
             style="
@@ -196,6 +209,8 @@
             talk for another day!
           </aside>
         </section>
+
+        <!-- Slide explaining why Rust was chosen -->
         <section data-markdown>
           <textarea data-template>
             ## Why Rust?
@@ -227,6 +242,8 @@
             This allowed us to easily share code and do more with less.
           </textarea>
         </section>
+
+        <!-- Two-column slide listing engine features -->
         <section>
           <div
             style="
@@ -285,6 +302,8 @@
             packages.
           </aside>
         </section>
+
+        <!-- Slide about packages with TOML example -->
         <section>
           <h2 style="font-size: 1.8em">
             Packages: Rust crates, but for gamedev?
@@ -329,6 +348,8 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
             other. And of course, they can depend on other packages.
           </aside>
         </section>
+
+        <!-- Demo announcement slide -->
         <section>
           <h1 class="r-fit-text">Demo time!</h1>
           <aside class="notes">
@@ -340,6 +361,8 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
             rain load]
           </aside>
         </section>
+
+        <!-- Slide about using Rust as scripting language with code example -->
         <section>
           <h2 style="font-size: 1.8em">Using Rust as a Scripting Language</h2>
           <div style="display: flex; align-items: center; height: 80%">
@@ -397,6 +420,8 @@ pub fn main() {
             like. Perhaps Grain, which is a ML-like targeting WebAssembly
           </aside>
         </section>
+
+        <!-- Code generation slide showing data model in TOML -->
         <section>
           <h2>Extreme Code Generation</h2>
           <h3 style="margin-bottom: 0">Data model</h3>
@@ -447,6 +472,8 @@ attributes = ["Debuggable", "Networked", "Store"]
             comes in.
           </aside>
         </section>
+
+        <!-- Code generation slide showing semantic analysis -->
         <section>
           <h2>Extreme Code Generation</h2>
           <h3 style="margin-bottom: 0">Semantic analysis</h3>
@@ -497,6 +524,8 @@ scope:ambient_core::camera (Ambient)
             see an example of what the system outputs here.
           </aside>
         </section>
+
+        <!-- Code generation slide showing generated Rust code -->
         <section>
           <h2>Extreme Code Generation</h2>
           <h3 style="margin-bottom: 0">Generation</h3>
@@ -563,6 +592,8 @@ scope:ambient_core::camera (Ambient)
             yesterday.
           </aside>
         </section>
+
+        <!-- Workflow challenges slide with centered list -->
         <section>
           <h2>Workflow</h2>
           <h3>that's a lot of windows</h3>
@@ -601,6 +632,8 @@ scope:ambient_core::camera (Ambient)
             struggle.
           </aside>
         </section>
+
+        <!-- Workflow automation slide with code example -->
         <section>
           <h2>Workflow</h2>
           <h3>Automation</h3>
@@ -654,6 +687,9 @@ Options:
             especially as we were targeting Windows, Linux, macOS and the web.
           </aside>
         </section>
+
+        <!-- Testing approach slide with image -->
+        <!-- Two-column layout with text and image -->
         <section>
           <h2>Workflow</h2>
           <h3>Testing</h3>
@@ -698,6 +734,8 @@ Options:
             GPU-based CI runner, but we didn't have the time to implement them.
           </aside>
         </section>
+
+        <!-- Full-width title slide -->
         <section>
           <h1 class="r-fit-text">So what went wrong?</h1>
           <aside class="notes">
@@ -705,6 +743,8 @@ Options:
             wrong?
           </aside>
         </section>
+
+        <!-- Code example slide -->
         <section>
           <h2>TOML isn't good for everything</h2>
           <pre><code style="font-size: 0.7em; text-wrap: balance; line-height: 1.2em;" class="language-toml" data-trim data-noescape>
@@ -733,6 +773,8 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
             your schema, but there just wasn't enough time.
           </aside>
         </section>
+
+        <!-- Centered bullet points slide -->
         <section>
           <h2>Building your own engine is unwise</h2>
           <div
@@ -770,6 +812,8 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
             Was it fun? Yes! Was it sustainable? Maybe not.
           </aside>
         </section>
+
+        <!-- Two-column layout with text and code -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <div style="display: flex; align-items: center; height: 80%">
@@ -819,10 +863,14 @@ ambient_ecs.workspace = true
             right?
           </aside>
         </section>
+
+        <!-- Single line title slide -->
         <section>
           <h1 class="r-fit-text">It was not.</h1>
           <aside class="notes">It was not.</aside>
         </section>
+
+        <!-- Centered bullet points slide -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>Reality</h3>
@@ -861,6 +909,8 @@ ambient_ecs.workspace = true
             progress. Debugging is very difficult, especially with async code.
           </aside>
         </section>
+
+        <!-- Centered bullet points slide -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>System</h3>
@@ -898,6 +948,8 @@ ambient_ecs.workspace = true
             on the web, unlike on desktop.
           </aside>
         </section>
+
+        <!-- Two-column layout with text and image -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>System</h3>
@@ -925,6 +977,8 @@ ambient_ecs.workspace = true
             cases where code would panic at runtime.
           </aside>
         </section>
+
+        <!-- Centered comparison with logos -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>WebGPU</h3>
@@ -955,6 +1009,8 @@ ambient_ecs.workspace = true
             same thing.
           </aside>
         </section>
+
+        <!-- Centered bullet points slide -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>WebGPU problems</h3>
@@ -998,6 +1054,8 @@ ambient_ecs.workspace = true
             WebGPU.
           </aside>
         </section>
+
+        <!-- Centered text conclusion slide -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>WebGPU conclusion</h3>
@@ -1023,6 +1081,8 @@ ambient_ecs.workspace = true
             it's just not there yet.
           </aside>
         </section>
+
+        <!-- Centered text with networking info -->
         <section>
           <h2>Porting the runtime to the web</h2>
           <h3>WebTransport</h3>
