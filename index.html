@@ -801,14 +801,16 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
         <!-- Two-column layout with text and code -->
         <section>
           <h2>Porting the runtime to the web</h2>
-          <div style="display: flex; align-items: center; height: 80%">
+          <h3>Theory</h3>
+          <div style="display: flex; align-items: top; height: 80%">
             <div style="flex: 0 0 60%">
               <p>Just make a new client with the same crates?</p>
               <p>
                 WebAssembly / <code>wgpu</code> / <code>winit</code> dream team?
               </p>
-              <p>It can't be that simple, right?</p>
+              <p>Can it really be that simple?</p>
             </div>
+
             <div style="flex: 0 0 40%">
               <pre><code class="language-toml" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
 [package]
@@ -853,16 +855,9 @@ ambient_ecs.workspace = true
             <p>
               We believed that this would be straightforward. We had already
               built on top of `wgpu` and `winit`, which would abstract over
-              platform specifics. That's all we need to do, right? It can't be
-              that simple, right?
+              platform specifics. It was not.
             </p>
           </aside>
-        </section>
-
-        <!-- Single line title slide -->
-        <section>
-          <h1 class="r-fit-text">It was not.</h1>
-          <aside class="notes">It was not.</aside>
         </section>
 
         <!-- Centered bullet points slide -->
@@ -919,8 +914,8 @@ ambient_ecs.workspace = true
 
         <!-- Centered bullet points slide -->
         <section>
-          <h2>Porting the runtime to the web</h2>
-          <h3>System</h3>
+          <h2 style="margin-bottom: 0">Porting the runtime to the web</h2>
+          <h3 style="margin-bottom: 0">System</h3>
           <div
             style="
               display: flex;
@@ -929,69 +924,52 @@ ambient_ecs.workspace = true
               height: 80%;
             "
           >
-            <ul
-              style="
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                line-height: 1.8;
-                text-align: center;
-              "
-            >
-              <li><code>wasm32-unknown-unknown</code> is a lie</li>
-              <li>
-                <code>wasm-bindgen</code> and <code>web-sys</code> for
-                <em>separate</em> system APIs
-              </li>
-              <li>Tokio doesn't fully work on the web</li>
-            </ul>
+            <div style="flex: 0 0 70%">
+              <ul
+                style="
+                  list-style: none;
+                  padding: 0;
+                  margin: 0;
+                  line-height: 1.8;
+                  text-align: center;
+                "
+              >
+                <li><code>wasm32-unknown-unknown</code> is a lie</li>
+                <li>Tokio doesn't fully work on the web</li>
+                <li>
+                  <code>wasm-bindgen</code> and <code>web-sys</code> for
+                  <em>separate</em> system APIs
+                </li>
+                <li>Built our own system abstraction to deal with it</li>
+                <li>
+                  <code>cargo clippy</code> and <code>cargo deny</code> were
+                  useful
+                </li>
+              </ul>
+            </div>
+            <div style="flex: 0 0 30%">
+              <img src="media/ambient_sys.png" alt="ambient_sys docs" />
+            </div>
           </div>
           <aside class="notes">
             <p>
-              Let's be more specific. Let's start with WASM. First, the platform
-              itself: wasm32-unknown-unknown, the standard Rust target for WASM
-              on the web, is a lie. Much of the standard library will panic at
-              runtime, and many APIs are missing.
-            </p>
-            <p>
-              You must use `wasm-bindgen` and `web-sys` to interact with the JS
-              APIs and replace that missing functionality, but any code relying
-              upon the standard library will need to be patched.
+              Let's be more specific. First, the platform itself:
+              wasm32-unknown-unknown, the standard Rust target for WASM on the
+              web, is a lie. Much of the standard library will panic at runtime,
+              and many APIs are missing.
             </p>
             <p>
               Our existing code targeted Tokio, which has limited support for
               running on the web. Additionally, you don't control task
               scheduling on the web, unlike on desktop.
             </p>
-          </aside>
-        </section>
-
-        <!-- Two-column layout with text and image -->
-        <section>
-          <h2>Porting the runtime to the web</h2>
-          <h3 style="margin-bottom: 0">System</h3>
-          <div style="display: flex; align-items: center">
-            <div style="flex: 0 0 72%">
-              <p>Only solution was our own system abstraction</p>
-              <p>Async tasks, timing, file I/O, clipboard, more</p>
-              <p>clippy and cargo-deny useful</p>
-            </div>
-            <div style="flex: 0 0 28%">
-              <img
-                src="media/ambient_sys.png"
-                alt="Ambient system abstraction"
-                style="width: 100%"
-              />
-            </div>
-          </div>
-          <aside class="notes">
-            To fix this, we needed to write our own system abstraction that
-            smoothed over the differences between the desktop and the web. This
-            abstraction covered: - async tasks - timing - file I/O - the
-            clipboard - and more. We had to make sure that any code that could
-            potentially run on the web used this abstraction. We used `clippy`
-            and `cargo-deny` to help with this, but we still ran into plenty of
-            cases where code would panic at runtime.
+            <p>
+              You must use `wasm-bindgen` and `web-sys` to interact with the JS
+              APIs and replace that missing functionality. We built our own
+              system abstraction to cover the missing APIs, and used `clippy`
+              and `cargo-deny` to help with the migration. Any calls we left
+              behind would panic at runtime on the web.
+            </p>
           </aside>
         </section>
 
@@ -1033,13 +1011,18 @@ ambient_ecs.workspace = true
               but, well, `wgpu` might be an implementation of WebGPU, but it is
               *not* WebGPU.
             </p>
+            <p>
+              The port we'd budgeted three weeks for ended up taking three
+              months, and it didn't work for a sizeable fraction of our
+              audience.
+            </p>
           </aside>
         </section>
 
         <!-- Centered bullet points slide -->
         <section>
           <h2>Porting the runtime to the web</h2>
-          <h3>WebGPU problems</h3>
+          <h3>WebGPU</h3>
           <div
             style="
               display: flex;
@@ -1062,13 +1045,10 @@ ambient_ecs.workspace = true
               <li>Browser compatibility</li>
               <li>Spec interpretation</li>
               <li>Debugging</li>
+              <li>Should have just used WebGL</li>
             </ul>
           </div>
           <aside class="notes">
-            <p>
-              I will have to speak in generalities here, as I did not do the
-              bulk of the porting work. However, I can say this much.
-            </p>
             <p>
               Our renderer was designed around having many bind groups, which
               forced us to redesign it when we realised WebGPU only supports a
@@ -1092,40 +1072,10 @@ ambient_ecs.workspace = true
               RenderDoc, work poorly with browsers. It's just not a very fun
               time.
             </p>
-          </aside>
-        </section>
-
-        <!-- Centered text conclusion slide -->
-        <section>
-          <h2>Porting the runtime to the web</h2>
-          <h3>WebGPU conclusion</h3>
-          <div
-            style="
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 80%;
-            "
-          >
-            <ul
-              style="
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                line-height: 1.8;
-                text-align: center;
-              "
-            >
-              <li>We should have used WebGL.</li>
-              <li>WebGPU's just not there yet.</li>
-            </ul>
-          </div>
-          <aside class="notes">
-            The port we'd budgeted two weeks for ended up being two months long,
-            and it didn't work for a sizeable fraction of our audience. In
-            hindsight, we should have targeted WebGL at the cost of graphical
-            fidelity. We wanted to bring native-like rendering to the web, but
-            it just wasn't there yet.
+            <p>
+              In hindsight, we should have just used WebGL. WebGPU wasn't there
+              yet, and if you use Firefox or Linux, it still isn't.
+            </p>
           </aside>
         </section>
 
@@ -1151,7 +1101,8 @@ ambient_ecs.workspace = true
               "
             >
               <li>Networking with quinn, which implements QUIC</li>
-              <li>QUIC ≈ WebTransport?</li>
+              <li>QUIC is not quite WebTransport</li>
+              <li>Underdeveloped ecosystem</li>
             </ul>
           </div>
           <aside class="notes">
@@ -1168,40 +1119,11 @@ ambient_ecs.workspace = true
               WebTransport to connect to the server would be straightforward.
             </p>
             <p>
-              Unfortunately, just like with WebGPU, it's not quite the same
-              thing.
-            </p>
-          </aside>
-        </section>
-
-        <!-- Two-column layout with text and image -->
-        <section>
-          <h2>Porting the runtime to the web</h2>
-          <h3>WebTransport</h3>
-          <div style="display: flex; align-items: center">
-            <div style="flex: 0 0 60%">
-              <p>QUIC ≈ WebTransport</p>
-              <p>⇏</p>
-              <p>QUIC = WebTransport</p>
-            </div>
-            <div style="flex: 0 0 40%">
-              <img
-                src="media/h3-issue.png"
-                alt="h3 issue"
-                style="width: 100%"
-              />
-            </div>
-          </div>
-          <aside class="notes">
-            <p>
-              Despite being strongly related, WebTransport is a separate
-              protocol from QUIC, which required parallel implementation on both
-              the client and server.
-            </p>
-            <p>
-              There was no existing support for WebTransport on the server in
-              Rust, so we worked with the open-source community to add
-              WebTransport support to `h3`. This took a while.
+              Unfortunately, despite being strongly related, WebTransport is a
+              separate protocol from QUIC. There was no existing support for
+              WebTransport on the server in Rust, so we worked with the
+              open-source community to add WebTransport support to `h3`. This
+              took a while.
             </p>
             <p>
               We also had to add support for the WebTransport API to our web
@@ -1293,9 +1215,9 @@ ambient_ecs.workspace = true
           </div>
           <aside class="notes">
             <p>
-              I've built my fair share of scriptable applications, and I've
-              typically done this with Lua or other languages amenable to
-              embedding.
+              Let's talk about scripting. I've built my fair share of scriptable
+              applications, and I've typically done this with Lua or other
+              languages amenable to embedding.
             </p>
             <p>
               A problem that I've always encountered while doing so, however, is
@@ -1365,22 +1287,35 @@ ambient_ecs.workspace = true
         <section>
           <h2>Using WebAssembly for Scripting</h2>
           <h3>wit-bindgen</h3>
-          <div style="display: flex; align-items: center; height: 80%">
-            <div style="flex: 0 0 60%">
-              <p>
-                <code>wit-bindgen</code> to the rescue! well, <em>sort of</em>
-              </p>
-              <p>WIT only supported so much</p>
+          <div
+            style="display: flex; align-items: center; height: 80%; gap: 32px"
+          >
+            <div style="flex: 0 0 30%">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  font-size: 0.8em;
+                  padding: 0;
+                  margin: 0;
+                  line-height: 1.3;
+                  text-align: right;
+                  gap: 0.5em;
+                "
+              >
+                <div>
+                  <code>wit-bindgen</code> to the rescue! well, <em>sort of</em>
+                </div>
+                <div>WIT only supported so much</div>
+                <div>Still needed glue code</div>
+                <div>Only a few languages supported</div>
+              </div>
             </div>
-            <div style="flex: 0 0 40%">
-              <pre><code class="language-wit" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+            <div style="flex: 0 0 35%">
+              <pre><code class="language-wit" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
 interface entity {
   use types.{entity-id, vec3, quat, mat4}
   use component.{entity as entity-data}
-
-  get-transforms-relative-to: func(
-    entities: list&lt;entity-id&gt;, origin: entity-id
-  ) -&gt; list&lt;mat4&gt;
 
   spawn: func(data: entity-data) -&gt; entity-id
   despawn: func(entity: entity-id) -&gt; option&lt;entity-data&gt;
@@ -1392,6 +1327,24 @@ interface entity {
   synchronized-resources: func() -&gt; entity-id
   persisted-resources: func() -&gt; entity-id
 }
+              </code></pre>
+            </div>
+            <div style="flex: 0 0 35%">
+              <pre><code class="language-rust" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+                // Rust implementation of the WIT interface
+                pub fn exists(entity: EntityId) -&gt; bool {
+                    wit::entity::exists(entity.into_bindgen())
+                }
+
+                /// Gets all of the entities that have the given &grave;component&grave;.
+                pub fn get_all&lt;T&gt;(component: Component&lt;T&gt;) -&gt; Vec&lt;EntityId&gt; {
+                    wit::entity::get_all(component.index()).from_bindgen()
+                }
+
+                /// Gets all of the entities within &grave;radius&grave; of &grave;position&grave;.
+                pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
+                    wit::entity::in_area(position.into_bindgen(), radius).from_bindgen()
+                }
               </code></pre>
             </div>
           </div>
@@ -1410,39 +1363,6 @@ interface entity {
               example of here. It supports a subset of what Rust supports, which
               meant we had to be careful in how we designed our API.
             </p>
-          </aside>
-        </section>
-
-        <!-- Two-column layout with text and code -->
-        <section>
-          <h2>Using WebAssembly for Scripting</h2>
-          <h3>wit-bindgen</h3>
-          <div style="display: flex; align-items: center; height: 80%">
-            <div style="flex: 0 0 45%">
-              <p>Still needed glue code</p>
-              <p>Data model didn't quite align</p>
-              <p>Only a few languages supported</p>
-            </div>
-            <div style="flex: 0 0 55%">
-              <pre><code class="language-rust" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
-// Rust implementation of the WIT interface
-pub fn exists(entity: EntityId) -&gt; bool {
-    wit::entity::exists(entity.into_bindgen())
-}
-
-/// Gets all of the entities that have the given &grave;component&grave;.
-pub fn get_all&lt;T&gt;(component: Component&lt;T&gt;) -&gt; Vec&lt;EntityId&gt; {
-    wit::entity::get_all(component.index()).from_bindgen()
-}
-
-/// Gets all of the entities within &grave;radius&grave; of &grave;position&grave;.
-pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
-    wit::entity::in_area(position.into_bindgen(), radius).from_bindgen()
-}
-              </code></pre>
-            </div>
-          </div>
-          <aside class="notes">
             <p>
               Unfortunately, the generated WIT code wasn't ergonomic, so we
               still had to write our own glue code for the guest API. Because of
@@ -1450,14 +1370,14 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
               ostensibly being able to use any language with WASM.
             </p>
             <p>
+              In addition, wit-bindgen's language support was limited; even if
+              everything worked out, we wouldn't support that many more
+              languages, and none of them would have been scripting languages.
+            </p>
+            <p>
               In hindsight, we should have considered writing our own binding
               layer - WIT is great, and I wish the best for it, but it wasn't
               the right fit for our constraints.
-            </p>
-            <p>
-              Also, wit-bindgen's language support was limited; even if
-              everything worked out, we wouldn't support that many more
-              languages, and none of them would have been scripting languages.
             </p>
           </aside>
         </section>
@@ -1520,136 +1440,39 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
         <section>
           <h2>Using WebAssembly for Scripting</h2>
           <h3>On the web</h3>
-          <p>We could just use the browser's runtime, right?</p>
-          <aside class="notes">
-            After a lot of work, we did eventually get desktop scripting working
-            reasonably well. The next challenge was to get it working on the
-            web. We could just use the browser's runtime, right?
-          </aside>
-        </section>
-
-        <!-- Centered image slide -->
-        <section>
-          <h2>Using WebAssembly for Scripting</h2>
-          <h3>On the web</h3>
-          <img
-            src="media/well-yes-but-actually-no.png"
-            alt="Well yes, but actually no"
-            style="width: 50%; height: auto"
-          />
-          <aside class="notes">Well yes, but actually no.</aside>
-        </section>
-
-        <!-- Two-column layout with text and image -->
-        <section>
-          <h2>Using WebAssembly for Scripting</h2>
-          <h3>On the web</h3>
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 80%;
-              width: 80%;
-              margin: 0 auto;
-            "
-          >
-            <div style="flex: 0 0 50%">
-              <p>
-                <code>wasm32-wasi</code> and Component Model didn't exist on the
-                web
-              </p>
-              <p>
-                Luckily, we were not alone: thanks, <code>wasm-bridge</code>!
-              </p>
-            </div>
-            <div
-              style="
-                flex: 0 0 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              <img
-                src="media/wasm-bridge.png"
-                alt="wasm-bridge repository"
-                style="width: 100%"
-              />
-            </div>
-          </div>
+          <p>Use the browser's runtime?</p>
+          <p><code>wasm-bridge</code> to the rescue!</p>
+          <p>But what cost are we paying?</p>
+          <p>d-d-double-FFI!</p>
           <aside class="notes">
             <p>
-              Our guest code uses wasm32-wasi and the Component Model, neither
-              of which were supported on the web. This meant we had to write a
-              web backend for our scripting, and then wire that backend up to
-              the Component Model.
+              After a lot of work, we did eventually get desktop scripting
+              working reasonably well. The next challenge was to get it working
+              on the web. We could just use the browser's runtime, right?
+            </p>
+            <p>
+              Unfortunately, our guest code uses wasm32-wasi and the Component
+              Model, neither of which were supported on the web. This meant we
+              had to write a web backend for our scripting, and then wire that
+              backend up to the Component Model.
             </p>
             <p>
               Web support for the Component Model is coming, but wasn't ready
-              when we needed it. Luckily, we were not alone; another developer,
-              Karel, had already encountered this problem, and built
-              wasm-bridge, which wraps WebAssembly components in a JS object,
-              allowing for their use in a web environment.
-            </p>
-            <p>We adapted it to run our guest code on the web.</p>
-          </aside>
-        </section>
-
-        <!-- Two-column layout with text and image -->
-        <section>
-          <h2>Using WebAssembly for Scripting</h2>
-          <h3>On the web</h3>
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 80%;
-              width: 80%;
-              margin: 0 auto;
-              gap: 32px;
-            "
-          >
-            <div style="flex: 0 0 50%">
-              <p><code>wasm-bridge</code> used <code>jco</code></p>
-              <p>
-                <code>jco</code> wrapped WebAssembly components in JavaScript
-              </p>
-              <p>JavaScript FFI has overhead</p>
-
-              <img src="media/oh-no.png" alt="oh no" style="width: 50%" />
-            </div>
-            <div
-              style="
-                flex: 0 0 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              <img
-                src="media/jco.png"
-                alt="jco repository"
-                style="width: 100%"
-              />
-            </div>
-          </div>
-          <aside class="notes">
-            <p>
-              However... wasm-bridge is based upon the Bytecode Alliance's JCO
-              project, which wrapped WebAssembly components in a JS object.
-              wasm-bridge wrapped the resulting JavaScript code with a Rust
-              interface.
+              when we needed it. Luckily, we could use the open-source
+              `wasm-bridge` for this. We adapted it to run our guest code on the
+              web.
             </p>
             <p>
-              This resulted in double-FFI with JavaScript, which was *very*
-              slow. We optimised this as much as we could, but we came to the
-              conclusion that we needed to remove the JS from the equation.
+              However... wasm-bridge uses a tool called JCO to convert a
+              WebAssembly component to JS module, and then wraps a Rust
+              interface around that JS module. Because Ambient was *also*
+              running as a JS-wrapped WASM module, we were paying the FFI cost
+              multiple times over.
             </p>
             <p>
               This was the main cause of our performance issues on the web. We
-              were unable to fix this in time.
+              were unable to fix this in time, as it was baked into how Ambient
+              on the runtime was implemented.
             </p>
           </aside>
         </section>
@@ -1697,8 +1520,9 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
             </p>
             <p>
               Because WASM has its own memory space for security reasons, we had
-              to constantly copy data between the host and guest, which was
-              expensive.
+              to constantly copy data between the host and guest, which is
+              expensive and slow, especially for an ECS with significant
+              traffic.
             </p>
             <p>
               Finally, we never got around to trying out other languages, which
