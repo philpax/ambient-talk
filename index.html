@@ -29,64 +29,55 @@
           </h4>
           <p>Mithun Hunsur (<a href="https://philpax.me">philpax.me</a>)</p>
           <aside class="notes">
-            G'day everyone, I'm here to talk to you about Ambient, the
-            open-source cross-platform multiplayer game runtime that we built
-            over the last two years.
+            G'day everyone! It may be the second quarter of the year, but I'm
+            still in a reflective mood. I'm here today to talk to you about
+            Ambient, the open-source cross-platform multiplayer game runtime
+            that I worked on from early 2023 to late 2023. I'll tell you about
+            the project, what we did well, and what went wrong.
           </aside>
         </section>
 
         <!-- Speaker introduction slide with contact info and projects -->
         <section>
           <h2>Who am I?</h2>
-          <div>
-            <p>Mithun Hunsur, Senior Engineer @ Ambient</p>
-            <ul>
-              <li>
-                Twitter: <a href="https://twitter.com/philpax_">@philpax_</a>
-              </li>
-              <li>
-                Mastodon:
-                <a href="https://mastodon.gamedev.place/@philpax"
-                  >@philpax@mastodon.gamedev.place</a
-                >
-              </li>
-            </ul>
-            <p>Primary maintainer of:</p>
-            <ul>
-              <li>the Ambient Runtime</li>
-              <li>llm.rs</li>
-            </ul>
+          <h3>Mithun Hunsur</h3>
+          <div style="text-align: left">
+            <p><em>currently</em> not doing Rust professionally 😭</p>
+            <p><em>formerly</em> <strong>Senior Engineer</strong> @ Ambient</p>
+            <p>
+              <em>formerly</em> <strong>Multiplayer Programmer</strong> @
+              Avalanche Studios
+            </p>
+            <p>
+              <em>formerly</em> <strong>Co-Lead Developer</strong> @ Just Cause
+              2 Multiplayer
+            </p>
+            <p><small>and a lot of other things</small></p>
           </div>
           <aside class="notes">
             First off, let me introduce myself. My name's Mithun, but I go by
-            Philpax online. You can find me on Twitter or Mastodon here. I'm a
-            Senior Engineer at Ambient, which is a startup looking to advance
-            Rust gamedev. Before Ambient, I worked at Avalanche Studios as a
-            triple-A gamedev. In my free time, I work on open-source AI,
-            including llm.rs, a Rust library for using large language models
-            locally.
-          </aside>
-        </section>
-
-        <!-- Simple slide with just a heading for transition -->
-        <section>
-          <h1>Here's the plan</h1>
-          <aside class="notes">
-            I have to admit something to you before we start: we're not
-            currently working on the runtime. Cool technology doesn't always
-            make a cool product.
+            Philpax online. I'm all over the shop, but my home base is in games,
+            where I've been working on multiplayer projects for over a decade.
+            During 2022 to late 2024, I worked at Ambient, also known as Dims
+            and Braindump, to explore new ways of creating multiplayer games to
+            enable both local and global collaboration. Before that, I worked at
+            Avalanche Studios as a triple-A gamedev, and well before that, I
+            worked on a volunteer project to make Just Cause 2 a massively
+            multiplayer game with scripting. In my free time, I work on all
+            kinds of things, including open-source AI, projects perpetually on
+            the verge of release, and more.
           </aside>
         </section>
 
         <!-- Introduction to Ambient slide -->
         <section>
-          <h1>What is Ambient?</h1>
+          <h1>What was Ambient?</h1>
           <aside class="notes">
-            So, what is the Ambient runtime? Multiplayer game development is
-            challenging. Most of the existing solutions are lacking in some way:
-            they don't support multiplayer, they aren't cross-platform, or they
-            limit the developer's creativity. We wanted to solve this problem
-            and make it easy for people to build multiplayer games.
+            So, what was the Ambient runtime? Multiplayer game development is
+            challenging. Most of the existing solutions were lacking in some
+            way: they didn't support multiplayer, they weren't cross-platform,
+            or they limited the developer's creativity. We wanted to solve this
+            problem and make it easy for people to build multiplayer games.
           </aside>
         </section>
 
@@ -97,13 +88,13 @@
           data-background-video-muted
         >
           <aside class="notes">
-            Of course, that took a few tries. What you're seeing here is our
+            Of course, that took a few tries. What you're seeing here was our
             first attempt to solve multiplayer game development. This is Dims, a
             collaborative low-code game development platform, also built in
-            Rust. You can build worlds and hang out together. Worlds aren't
-            games, though. To bring them to life, we decided to let you script
-            your games with WebAssembly. And then we realised it was becoming
-            something else entirely.
+            Rust. You can build worlds, hang out together, and share them with
+            others. Worlds aren't games, though. To bring them to life, we
+            decided to let you script your games with WebAssembly. And then we
+            realised it was becoming something else entirely.
           </aside>
         </section>
 
@@ -146,14 +137,15 @@
             </div>
           </div>
           <aside class="notes">
-            We took the core of Dims, cleaned it up, and open-sourced it to
-            create Ambient. Once that was done, we then added a package manager,
-            ported it to the web, and built a cloud platform around it. That is
-            to say: Ambient is a modern open-source multiplayer-first
-            cross-platform game runtime with WebAssembly-based scripting, web
-            support, and a package-centric workflow. All of this is backed by a
-            cloud platform, the "Ambient Platform", that allows users to build,
-            publish, play and share packages and games.
+            We took the core engine of Dims, cleaned it up, and open-sourced it
+            to create Ambient. Once that was done, scaled up the scripting, we
+            then built a package ecosystem, ported it to the web, and built a
+            cloud platform around it. That is to say: Ambient was a modern
+            open-source multiplayer-first cross-platform game runtime with
+            WebAssembly-based scripting, web support, and a package-centric
+            workflow. All of this was backed by a cloud platform, the "Ambient
+            Platform", that allows users to build, play and publish packages and
+            games.
           </aside>
         </section>
 
@@ -209,12 +201,11 @@
             </div>
           </div>
           <aside class="notes">
-            And of course, all of this is written in Rust. And I mean *all* of
+            And of course, all of this was written in Rust. And I mean *all* of
             it. The game server? The desktop client? The web client? The
             scripting? The build automation? The cloud services? The website?
-            *click* The crab comes for us all. Today, I'll primarily be talking
-            about the runtime. The website was written in Dioxus, but that's a
-            talk for another day!
+            *click* The crab comes for us all. The primary focus today will be
+            on the game engine, but I'll briefly touch upon the website as well.
           </aside>
         </section>
         <!-- Slide explaining why Rust was chosen -->
@@ -248,15 +239,15 @@
             A game engine requires performance, and the typical answer is C++.
             But we chose Rust. We wanted a safe and performant language with
             modern conveniences. We wanted the tooling: cargo, clippy, rustfmt
-            We wanted native support for concurrency and parallelism We wanted a
-            rich, reliable package ecosystem We wanted to confidently refactor
-            code with ease And we wanted a strong type system, including enums,
-            traits, and more, all backed by the borrow checker Of course, these
-            also make it much easier to write cross-platform code, especially
-            with Rust crates: 99.999% of our code was the same between Windows,
-            macOS and Linux. Rust is also a fantastic general-purpose language,
-            which is why we used it for everything else. This allowed us to
-            easily share code and do more with less.
+            We wanted native support for concurrency and parallelism. We wanted
+            a rich, reliable package ecosystem. We wanted to confidently
+            refactor code with ease. And we wanted a strong type system,
+            including enums, traits, and more, all backed by the borrow checker.
+            Of course, these also make it much easier to write cross-platform
+            code, especially with Rust crates: the vast majority of our code was
+            the same between Windows, macOS and Linux. Rust is also a fantastic
+            general-purpose language, which is why we used it for everything
+            else. This allowed us to easily share code and do more with less.
           </aside>
         </section>
 
@@ -312,11 +303,11 @@
             </div>
           </div>
           <aside class="notes">
-            Now, let's talk features. We're a batteries-included runtime, so we
-            made sure our engine had everything you might need to build a game,
-            as you can see here. The most innovative items on this list are the
-            packages, WASM scripting, and web support. Let's start with the
-            packages.
+            Now, let's talk features. We were a batteries-included runtime, so
+            we made sure our engine had everything you might need to build a
+            game, as you can see here. The most innovative items on this list
+            are the packages, WASM scripting, and web support. Let's start with
+            the packages.
           </aside>
         </section>
 
@@ -353,29 +344,32 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
             </div>
           </div>
           <aside class="notes">
-            Like many modern game engines, we use an entity component system —
+            Like many modern game engines, we used an entity component system —
             an ECS — in which entities have components, which are pieces of
             data, and these entities and their components are acted upon by
             systems. However, we wanted to go a step further. I grew up with
             Garry's Mod, where you could load code and assets at runtime to
-            extend the game experience. We wanted to build the modern
-            equivalent, which led us to our runtime-loadable packages, which
-            were inspired heavily by Rust crates. These can add new components,
-            bring in new assets, load new WASM modules, and even message each
-            other. And of course, they can depend on other packages.
+            extend the game experience. We wanted to build a modern take, which
+            led us to our runtime-loadable packages, inspired heavily by Rust
+            crates. These can add new components, bring in new assets, load new
+            WASM modules, and even message each other. And of course, they can
+            depend on other packages.
           </aside>
         </section>
 
         <!-- Demo announcement slide -->
         <section>
           <h1 class="r-fit-text">Demo time!</h1>
+          <h2>Tangent</h2>
+          <h3>a simple 3D multiplayer game</h3>
           <aside class="notes">
-            The best way to demonstrate this is, of course, with a demo. I'm
-            going to do *two* demos. Wish me luck! First up, let's look at an
-            example that uses a package. [third_person_camera code, docs, local
-            demos] Next up, let's look at a moddable game that runs on the web.
-            [tangent join web server native, tangent join with website, fire
-            rain load]
+            Unfortunately, as our web services have gone down, I can't show you
+            the full Ambient experience; this means no web client, no cloud
+            packages, and no modding. However, I can at least show you what the
+            multiplayer experience is like with Tangent, a simple 3D multiplayer
+            game where you control a protagonist that can run around, get into a
+            hovercraft, and shoot at each other. I can also briefly take you
+            through how packages are structured, and how scripting works.
           </aside>
         </section>
 
@@ -422,19 +416,20 @@ pub fn main() {
             </div>
           </div>
           <aside class="notes">
-            As you might have noticed in the demo, we use Rust as our scripting
+            As you might have noticed in the demo, we used Rust as our scripting
             language. This is made possible through WebAssembly - more on that
             later. We liked using Rust for scripting, and it let us share a lot
-            of code, which was fantastic for when we were changing things
-            around. However, the language is still somewhat complex, even
-            despite our API's efforts to simplify it. The compile times are OK,
-            but not fantastic: game developers appreciate fast iteration times,
-            and Rust doesn't always provide that. We also had a concern that the
-            use of Rust might scare off potential users; we found that users
-            were fine with it once they got used to it, but it was definitely a
-            barrier to entry. We think a slightly higher-level language would be
-            better for this use case, but we're not sure what that would look
-            like. Perhaps Grain, which is a ML-like targeting WebAssembly
+            of code, which was fantastic for letting us change things on the
+            host and the guest at the same time. However, the language is still
+            somewhat complex, despite our attempts to hide it under the API. The
+            compile times were OK, but not fantastic: game developers appreciate
+            fast iteration times, and Rust doesn't always provide that. We also
+            had a concern that the use of Rust might scare off potential users;
+            we found that users were fine with it once they got used to it, but
+            it was definitely a barrier to entry. I believe a slightly
+            higher-level language would be better for this use case, but I'm not
+            sure what that would look like. Perhaps Grain, which is a ML-like
+            language targeting WebAssembly, would be a good fit.
           </aside>
         </section>
 
@@ -481,11 +476,10 @@ attributes = ["Debuggable", "Networked", "Store"]
             </div>
           </div>
           <aside class="notes">
-            Next up, let's talk about some code generation we do. As you saw
-            before, our packages define components in their TOML files. The core
-            Ambient definitions are also a package; you can see an example of
-            that here. Of course, both engine code and guest code need access to
-            the things defined by packages. That's where the code generation
+            Our packages are defined as TOML, including their components, and
+            this includes core Ambient definitions, as you can see here.
+            However, we need to project these definitions into the Rust code so
+            that they can be used. That's where our extreme code generation
             comes in.
           </aside>
         </section>
@@ -534,11 +528,11 @@ scope:ambient_core::camera (Ambient)
             </div>
           </div>
           <aside class="notes">
-            These definitions are consumed by our semantic system, which will
-            then unify them and determine how all of the packages are linked
-            together. Our semantic system is just a library, so it can be used
-            by the engine at runtime and by guest code at build time. You can
-            see an example of what the system outputs here.
+            The TOML definitions were consumed by our semantic system, which
+            then unifies them and determines how all of the packages are linked
+            together, much like a compiler. The system is a Rust library, so it
+            could be used by the engine at runtime and by guest code at build
+            time. You can see some of the system's diagnostic output here.
           </aside>
         </section>
 
@@ -548,8 +542,8 @@ scope:ambient_core::camera (Ambient)
           <h3 style="margin-bottom: 0">Generation</h3>
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 40%">
-              <div style="font-size: 0.7em">
-                <p>Semantic -> Rust code</p>
+              <div>
+                <p>Semantic → Rust code</p>
                 <p>Build scripts > Proc macros</p>
                 <p><code>src</code>, not <code>OUT_DIR</code></p>
               </div>
@@ -598,15 +592,16 @@ scope:ambient_core::camera (Ambient)
             </div>
           </div>
           <aside class="notes">
-            Once it's in that representation, it's easy enough to emit Rust code
-            for it. We initially used procedural macros for this, but we
-            switched to build scripts because rust-analyzer struggled and our
+            Once we have all of the definitions loaded in, Rust code can be
+            emitted for them. We initially used procedural macros for this, but
+            we switched to build scripts because rust-analyzer struggled and our
             users appreciated being able to see the generated code. These files
             are placed in `src`, not `OUT_DIR`, to make it easier to see. This
-            is not recommended, but it seems to work. Essentially, we've added
-            another stage to the Rust compilation process to integrate the
-            Ambient interface definition language. This is not unlike Pavex from
-            yesterday.
+            is not the usual practice, but it worked well for us; it improved
+            users' understanding of what the system was doing, and made it
+            easier for us to develop. Another note worth mentioning here is that
+            I would recommend versioning your generated code; it is tremendously
+            useful to be able to see exactly what changes between generations.
           </aside>
         </section>
 
@@ -633,20 +628,19 @@ scope:ambient_core::camera (Ambient)
             >
               <li>Lots of moving parts</li>
               <li>Workspaces aren't perfect</li>
-              <li>rust-analyzer only uses one workspace</li>
+              <li><code>rust-analyzer</code> only uses one workspace</li>
               <li>Five contexts, five windows!</li>
             </ul>
           </div>
           <aside class="notes">
-            If you've been keeping count, you'll have noticed that we have a lot
+            If you've been keeping count, you'll have noticed that we had a lot
             of moving parts. Rust workspaces do a pretty good job of grouping
             together packages, but they don't support cross-toolchain packages
             (that is, mixing desktop and WASM), and they don't support nesting.
             rust-analyzer works with the workspace you have in the directory
-            you've opened in your IDE. This means that we could have up to five
-            VS Code windows open: the native client, web client, guest code,
-            cloud services, and the website. That's obviously a bit of a
-            struggle.
+            you've opened in your IDE. As a result, we had up to five VS Code
+            windows open: the native client, web client, guest code, cloud
+            services, and the website. That was obviously a bit of a struggle.
           </aside>
         </section>
 
@@ -664,33 +658,36 @@ scope:ambient_core::camera (Ambient)
                   >https://github.com/matklad/cargo-xtask</a
                 >
               </p>
-              <p>Rust tool, campfire, to make common operations easy to do</p>
+              <p>
+                Rust tool, <code>campfire</code>, to make common operations easy
+                to do
+              </p>
               <p>Well worth it</p>
             </div>
             <div style="flex: 0 0 50%">
-              <pre><code style="font-size: 0.5em; white-space: pre-wrap; line-height: 1.2em;" class="language-bash">
-Ambient # cargo cf --help
-Finished dev [unoptimized + debuginfo] target(s) in 0.66s
-Running `target/debug/campfire --help`
+              <pre><code style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" class="language-bash" data-trim>
+                Ambient # cargo cf --help
+                Finished dev [unoptimized + debuginfo] target(s) in 0.66s
+                Running `target/debug/campfire --help`
 
-Usage: campfire &lt;COMMAND&gt;
+                Usage: campfire &lt;COMMAND&gt;
 
-Commands:
-  doc            Generate documentation for Ambient
-  package        Package-related functionality
-  golden-images  Running golden image tests
-  release        Release-related functionality
-  install        Helper to install specific versions of Ambient
-  join           Helper to join a server by various means
-  web            Web-related functionality
-  clean          Clean all build artifacts for all packages
-  run            Run a package. Alias for `package run`
-  serve          Serve a package. Alias for `package serve`
-  help           Print this message or the help of the given subcommand(s)
+                Commands:
+                  doc            Generate documentation for Ambient
+                  package        Package-related functionality
+                  golden-images  Running golden image tests
+                  release        Release-related functionality
+                  install        Helper to install specific versions of Ambient
+                  join           Helper to join a server by various means
+                  web            Web-related functionality
+                  clean          Clean all build artifacts for all packages
+                  run            Run a package. Alias for `package run`
+                  serve          Serve a package. Alias for `package serve`
+                  help           Print this message or the help of the given subcommand(s)
 
-Options:
-  -h, --help     Print help
-  -V, --version  Print version
+                Options:
+                  -h, --help     Print help
+                  -V, --version  Print version
               </code></pre>
             </div>
           </div>
@@ -701,7 +698,7 @@ Options:
             package versions, deploying the packages, and more. This was then
             aliased using `cargo/config.toml` to make it easy to access. This
             was an upfront cost, but it paid for itself many times over,
-            especially as we were targeting Windows, Linux, macOS and the web.
+            especially when building for multiple platforms.
           </aside>
         </section>
 
@@ -720,14 +717,14 @@ Options:
               margin: 0 auto;
             "
           >
-            <div style="flex: 0 0 50%">
+            <div style="flex: 0 0 55%">
               <p>Golden image tests</p>
               <p>Software rendering for CI</p>
               <p>Still brittle</p>
             </div>
             <div
               style="
-                flex: 0 0 50%;
+                flex: 0 0 45%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -741,14 +738,15 @@ Options:
             </div>
           </div>
           <aside class="notes">
-            For testing, our primary solution was the use of golden image tests:
-            we would run a test case, wait a few seconds, take a screenshot, and
-            compare it to a reference image. Using software rendering, we were
-            able to run this in our CI. This worked pretty well, but it had some
-            drawbacks: Software rendering is very slow and unstable And the
-            tests were still brittle due to networking, rendering, timing and
-            randomness issues We considered more complex tests and using a
-            GPU-based CI runner, but we didn't have the time to implement them.
+            For testing, we used a combination of unit tests and golden image
+            tests: we would run a test case, wait a few seconds, take a
+            screenshot, and compare it to a reference image. Using software
+            rendering, we were able to run this in our CI. This worked pretty
+            well, but it had some drawbacks: Software rendering is very slow and
+            unstable and the tests were still brittle due to networking,
+            rendering, timing and randomness issues. We considered more complex
+            tests and using a GPU-based CI runner, but we didn't have the time
+            to implement them.
           </aside>
         </section>
 
@@ -782,12 +780,22 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
     "Debuggable",
 ] }
           </code></pre>
+          <p>
+            Comfy software:
+            <a href="https://catgirl.ai/log/comfy-software/"
+              >https://catgirl.ai/log/comfy-software/</a
+            >
+          </p>
           <aside class="notes">
-            First off, a fairly surface-level thing: our packages are defined
-            with TOML. Unfortunately, TOML gets quite ugly for complex
-            structures, especially because TOML 1.0 can't do multi-line
-            literals. I wanted to do a domain-specific language for defining
-            your schema, but there just wasn't enough time.
+            Let's start with an easy one: our packages were defined with TOML.
+            Unfortunately, TOML gets quite ugly for complex structures,
+            especially because TOML 1.0 can't do multi-line literals. I wanted
+            to do a domain-specific language for defining your schema, but there
+            just wasn't enough time. It's ultimately a small thing, but every
+            bit of friction is painful. A friend who tried out Ambient
+            experienced genuine burnout from this: the experience of defining
+            components in TOML and switching to Rust was deeply unpleasant. It
+            wasn't "comfy software" - it made you feel worse for using it.
           </aside>
         </section>
 
@@ -819,14 +827,15 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
           <aside class="notes">
             If you've talked to any game developer, you'll have heard the
             standard advice: don't build your own engine. Rust solves many
-            problems, but it doesn't solve that one. We are a small team of less
-            than 10 with limited resources, and building an engine from scratch
-            is a huge undertaking. We were able to innovate in ways that
-            existing engines couldn't, but everything else suffered. There are
-            parts of our engine that saw no love for months, sometimes years. On
-            top of that, we were also building an ecosystem, which meant we were
-            constantly updating the documentation, examples, platform, and more.
-            Was it fun? Yes! Was it sustainable? Maybe not.
+            problems, but it doesn't solve that one. We were a small team of
+            less than 10 with limited resources, and building an engine from
+            scratch was a huge undertaking. We were able to innovate in ways
+            that existing engines couldn't, but everything else suffered. There
+            are parts of our engine that saw no love for months, sometimes
+            years. On top of that, we were also building an ecosystem, which
+            meant we were constantly updating the documentation, examples,
+            platform, and more. Was it fun? Yes! Was it sustainable? Absolutely
+            not.
           </aside>
         </section>
 
@@ -836,11 +845,13 @@ hide = { type = "Empty", name = "Nameplate Hide", description = "If attached to 
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 60%">
               <p>Just make a new client with the same crates?</p>
-              <p>WebAssembly / wgpu / winit dream team?</p>
+              <p>
+                WebAssembly / <code>wgpu</code> / <code>winit</code> dream team?
+              </p>
               <p>It can't be that simple, right?</p>
             </div>
             <div style="flex: 0 0 40%">
-              <pre><code class="language-toml" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+              <pre><code class="language-toml" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
 [package]
 name = "ambient_web"
 readme = "../README.md"
@@ -859,7 +870,6 @@ ambient_audio.workspace = true
 ambient_cameras.workspace = true
 ambient_client_shared.workspace = true
 ambient_core.workspace = true
-ambient_prefab.workspace = true
 ambient_debugger.workspace = true
 ambient_ecs.workspace = true
               </code></pre>
@@ -916,14 +926,16 @@ ambient_ecs.workspace = true
           </div>
           <aside class="notes">
             The web is a different beast. It has different constraints,
-            different APIs, and different performance constraints. Many of the
-            assumptions we'd made about the desktop didn't hold up on the web.
-            Support for the latest APIs is *not* universal; Chrome was the only
-            browser that supported everything we used, and it didn't support
-            them on Linux. WebAssembly goes a long way towards shrinking the
-            discrepancy in performance between web and desktop, but there is
-            still a gap. Multithreading on the web is still very much a work in
-            progress. Debugging is very difficult, especially with async code.
+            different APIs, and different performance characteristics. Many of
+            the assumptions we'd made about the desktop didn't hold up on the
+            web. Support for the latest APIs was *not* universal; Chrome was the
+            only browser that supported everything we used, and it didn't
+            support them on Linux. WebAssembly goes a long way towards shrinking
+            the discrepancy in performance between web and desktop, but there
+            was still a gap. Multithreading on the web was still very much a
+            work in progress. Debugging was very difficult, especially with
+            async code. The tooling for working with WASM was at least an order
+            of magnitude worse than with native.
           </aside>
         </section>
 
@@ -948,35 +960,38 @@ ambient_ecs.workspace = true
                 text-align: center;
               "
             >
-              <li>wasm32-unknown-unknown is a lie</li>
-              <li>wasm-bindgen and web-sys give you your system APIs</li>
+              <li><code>wasm32-unknown-unknown</code> is a lie</li>
+              <li>
+                <code>wasm-bindgen</code> and <code>web-sys</code> for
+                <em>separate</em> system APIs
+              </li>
               <li>Tokio doesn't fully work on the web</li>
             </ul>
           </div>
           <aside class="notes">
-            So, to be more specific, let's dig into the troubles we faced.
-            First, the platform itself: wasm32-unknown-unknown, the standard
-            Rust target for WASM on the web, is a convenient lie we tell
-            ourselves. Much of the standard library will panic at runtime, and
-            many APIs are missing. You must use `wasm-bindgen` and `web-sys` to
-            interact with the JS APIs and replace that missing functionality.
-            Our existing code targeted Tokio, which has limited support for
-            running on the web. Additionally, you don't control task scheduling
-            on the web, unlike on desktop.
+            Let's be more specific. Let's start with WASM. First, the platform
+            itself: wasm32-unknown-unknown, the standard Rust target for WASM on
+            the web, is a lie. Much of the standard library will panic at
+            runtime, and many APIs are missing. You must use `wasm-bindgen` and
+            `web-sys` to interact with the JS APIs and replace that missing
+            functionality, but any code relying upon the standard library will
+            need to be patched. Our existing code targeted Tokio, which has
+            limited support for running on the web. Additionally, you don't
+            control task scheduling on the web, unlike on desktop.
           </aside>
         </section>
 
         <!-- Two-column layout with text and image -->
         <section>
           <h2>Porting the runtime to the web</h2>
-          <h3>System</h3>
+          <h3 style="margin-bottom: 0">System</h3>
           <div style="display: flex; align-items: center">
-            <div style="flex: 0 0 75%">
-              <p>Time to write our own system abstraction!</p>
+            <div style="flex: 0 0 72%">
+              <p>Only solution was our own system abstraction</p>
               <p>Async tasks, timing, file I/O, clipboard, more</p>
               <p>clippy and cargo-deny useful</p>
             </div>
-            <div style="flex: 0 0 25%">
+            <div style="flex: 0 0 28%">
               <img
                 src="media/ambient_sys.png"
                 alt="Ambient system abstraction"
@@ -988,7 +1003,7 @@ ambient_ecs.workspace = true
             To fix this, we needed to write our own system abstraction that
             smoothed over the differences between the desktop and the web. This
             abstraction covered: - async tasks - timing - file I/O - the
-            clipboard - and more We had to make sure that any code that could
+            clipboard - and more. We had to make sure that any code that could
             potentially run on the web used this abstraction. We used `clippy`
             and `cargo-deny` to help with this, but we still ran into plenty of
             cases where code would panic at runtime.
@@ -1017,13 +1032,15 @@ ambient_ecs.workspace = true
             />
           </div>
           <aside class="notes">
-            Next up, graphics. From the start, we have been using `wgpu`, which
-            is a fantastic abstraction over the various graphics APIs, including
-            WebGPU. We wanted a relatively modern look, and we wanted to be able
-            to use the same code on both the web and desktop. We were under the
-            impression that using it would make porting to the web using WebGPU
-            straightforward. It *did* make it easier, but, well, they're not the
-            same thing.
+            Next up, graphics. From the start, we used `wgpu`, which is a
+            fantastic abstraction over the various graphics APIs, including
+            WebGPU, and meant to serve as the WebGPU implementation for Firefox
+            and others. We wanted support for relatively modern graphics, and we
+            wanted to be able to use the same code on both the web and desktop.
+            We were under the impression that using it would make porting to the
+            web using WebGPU straightforward. It *did* make it easier, but,
+            well, `wgpu` might be an implementation of WebGPU, but it is *not*
+            WebGPU.
           </aside>
         </section>
 
@@ -1056,19 +1073,21 @@ ambient_ecs.workspace = true
             </ul>
           </div>
           <aside class="notes">
-            Let's quickly go over the problems we encountered. Our renderer was
-            designed around having many bind groups, and we had to partially
-            redesign it when we discovered WebGPU only supports a few bind
-            groups at a time. We relied on extensions that aren't present on the
-            web. We expected this, but it still hurt. WebGPU support across
-            browsers is basically limited to Windows/Mac Chrome. There is no
-            support for Linux or any other non-Chromium browsers, like Firefox.
-            Each browser has a slightly different interpretation of the spec,
-            and their interpretation can differ from wgpu's native
+            I will have to speak in generalities here, as I did not do the bulk
+            of the porting work. However, I can say this much. Our renderer was
+            designed around having many bind groups, which forced us to redesign
+            it when we realised WebGPU only supports a few bind groups. We
+            relied on extensions that aren't present on the web, which was
+            expected, but still hurt. WebGPU support across browsers was
+            basically limited to Windows/Mac Chrome; it is slightly better now,
+            but only slightly. WebGPU is still off by default on both Linux and
+            Firefox. Each browser has a slightly different interpretation of the
+            spec, and their interpretation can differ from wgpu's native
             implementation, including in how they compile shaders. Debugging is
             very difficult - the standard tools don't work, and you're not
             debugging WebGPU, you're debugging your browser's implementation of
-            WebGPU.
+            WebGPU. Usual graphics debugging tools, like RenderDoc, work poorly
+            with browsers. It's just not a very fun time.
           </aside>
         </section>
 
@@ -1079,23 +1098,30 @@ ambient_ecs.workspace = true
           <div
             style="
               display: flex;
-              flex-direction: column;
               justify-content: center;
               align-items: center;
               height: 80%;
-              gap: 1em;
-              margin-top: 2em;
             "
           >
-            <div>We should have used WebGL.</div>
-            <div>WebGPU's just not there yet.</div>
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>We should have used WebGL.</li>
+              <li>WebGPU's just not there yet.</li>
+            </ul>
           </div>
           <aside class="notes">
             The port we'd budgeted two weeks for ended up being two months long,
-            and it doesn't work for a sizeable fraction of our audience. In
+            and it didn't work for a sizeable fraction of our audience. In
             hindsight, we should have targeted WebGL at the cost of graphical
             fidelity. We wanted to bring native-like rendering to the web, but
-            it's just not there yet.
+            it just wasn't there yet.
           </aside>
         </section>
 
@@ -1106,26 +1132,34 @@ ambient_ecs.workspace = true
           <div
             style="
               display: flex;
-              flex-direction: column;
               justify-content: center;
               align-items: center;
               height: 80%;
-              gap: 1em;
-              margin-top: 2em;
             "
           >
-            <div>Networking with quinn, which implements QUIC</div>
-            <div>QUIC ≈ WebTransport?</div>
+            <ul
+              style="
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                line-height: 1.8;
+                text-align: center;
+              "
+            >
+              <li>Networking with quinn, which implements QUIC</li>
+              <li>QUIC ≈ WebTransport?</li>
+            </ul>
           </div>
           <aside class="notes">
             For networking, we used the `quinn` library, which implements the
             QUIC protocol. QUIC is a fantastic protocol that provides secure
-            reliable and unreliable data streams, making it perfect for us.
-            WebTransport is a sibling protocol of QUIC that shares a great deal
-            with it, and the majority of browsers have native client support for
-            it. We assumed that having the web client use WebTransport to
-            connect to the server would be straightforward. Unfortunately, just
-            like with WebGPU, it's not quite the same thing.
+            reliable and unreliable data streams, which gave us a strong
+            transport layer for our networking. WebTransport is a sibling
+            protocol of QUIC that shares a great deal with it, and the majority
+            of browsers have native client support for it. We assumed that
+            having the web client use WebTransport to connect to the server
+            would be straightforward. Unfortunately, just like with WebGPU, it's
+            not quite the same thing.
           </aside>
         </section>
 
@@ -1148,13 +1182,14 @@ ambient_ecs.workspace = true
             </div>
           </div>
           <aside class="notes">
-            WebTransport is a separate protocol from QUIC, and it has its own
-            API. There was no existing support for WebTransport on the server in
-            Rust, so we worked with Dario, an open-source contributor, to add
-            WebTransport support to `h3`. As you might imagine, this took a
-            while. We also had to add a WebTransport backend to our client, but
-            as `quinn` and the WebTransport JS APIs are relatively similar, this
-            wasn't too bad.
+            Despite being strongly related, WebTransport is a separate protocol
+            from QUIC, which required parallel implementation on both the client
+            and server. There was no existing support for WebTransport on the
+            server in Rust, so we worked with the open-source community to add
+            WebTransport support to `h3`. This took a while. We also had to add
+            support for the WebTransport API to our web client, but we were able
+            to abstract over the differences between WebTransport and QUIC
+            thanks to their shared ancestry.
           </aside>
         </section>
 
@@ -1180,7 +1215,7 @@ ambient_ecs.workspace = true
               "
             >
               <li>
-                Networking, rendering and logic all run on the same thread!
+                Networking, rendering and logic all ran on the same thread!
               </li>
               <li>Messages dropped</li>
               <li>Scripting overhead</li>
@@ -1188,13 +1223,14 @@ ambient_ecs.workspace = true
           </div>
           <aside class="notes">
             After all this, though, we discovered that networking, rendering and
-            logic all run on the same thread on the web - remember, no
+            logic ran on the same thread on the web - remember, no
             multithreading - which meant that messages would be dropped if the
-            client was too busy. Much of this came from our WASM scripting
-            solution having severe overhead in a web environment. More on that
-            in the next slide. This was catastrophic, and we added a few
+            client was too busy. Our WASM scripting had severe overhead in the
+            web environment. This was catastrophic, and we added a few
             workarounds - including dropping frames to allow networking to catch
-            up - but we don’t have a general solution for it yet.
+            up and experimenting with Web Workers - but we did not come up with
+            a general solution, and the web client's experience very quickly
+            degraded under load.
           </aside>
         </section>
 
@@ -1216,7 +1252,7 @@ ambient_ecs.workspace = true
                 padding: 0;
                 margin: 0;
                 line-height: 1.8;
-                text-align: center;
+                text-align: right;
               "
             >
               <li>Game engines usually use Lua or such</li>
@@ -1231,18 +1267,17 @@ ambient_ecs.workspace = true
             />
           </div>
           <aside class="notes">
-            Let's move on to the scripting side of things. I've built my fair
-            share of scriptable applications, and I've typically done this with
-            Lua or other languages amenable to embedding. A problem that I've
-            always encountered while doing so, however, is that you're locked
-            into whatever language you've embedded. The only way to add more
-            languages is to add more interpreters, which is very cumbersome.
-            This time around, we decided to use WebAssembly for scripting, which
-            is a language-independent bytecode format. Despite what the name
-            suggests, it can be used outside of the web! In theory, we could use
-            any language that compiles to WebAssembly, and we could have Rust as
-            a first-class guest language. In practice, it was a bit more
-            complicated.
+            I've built my fair share of scriptable applications, and I've
+            typically done this with Lua or other languages amenable to
+            embedding. A problem that I've always encountered while doing so,
+            however, is that you're locked into whatever language you've
+            embedded. The only way to add more languages was to add more
+            interpreters. This time around, we decided to use WebAssembly for
+            scripting, which is a language-independent bytecode format. Despite
+            what the name suggests, it can be used outside of the web! In
+            theory, we could use any language that compiles to WebAssembly, and
+            we could have Rust as a first-class guest language. In practice, the
+            story is not so simple.
           </aside>
         </section>
 
@@ -1268,10 +1303,9 @@ ambient_ecs.workspace = true
                 text-align: center;
               "
             >
-              <li>On the web, just use the browser</li>
-              <li>On native, you need an interpreter</li>
-              <li>Let’s go with Wasmtime</li>
-              <li>Bindings?</li>
+              <li>On the web, "just" use the browser</li>
+              <li>On native, you need a runtime: <code>wasmtime</code>.</li>
+              <li>How do you bind host code?</li>
             </ul>
           </div>
           <aside class="notes">
@@ -1279,10 +1313,10 @@ ambient_ecs.workspace = true
             can just use the browser's WebAssembly runtime - at least in theory
             - but we needed a way to run it natively. There are a couple of
             interpreters, but we chose the Bytecode Alliance’s Wasmtime for this
-            as it has a JIT compiler, natively supports Rust, and is at the
-            forefront of WASM development. In doing so, however, we discovered
-            our second problem: how do you bind Rust types to WebAssembly, which
-            only has a C-like ABI?
+            as it had a JIT compiler, natively supported Rust as a host, and was
+            at the forefront of WASM development. In doing so, however, we
+            discovered our second problem: how do you bind Rust types to
+            WebAssembly, which only has a C-like ABI?
           </aside>
         </section>
 
@@ -1292,9 +1326,10 @@ ambient_ecs.workspace = true
           <h3>wit-bindgen</h3>
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 60%">
-              <p>Bytecode Alliance has us covered with wit-bindgen.</p>
-              <p>Well, sort of</p>
-              <p>WIT only supports so much</p>
+              <p>
+                <code>wit-bindgen</code> to the rescue! well, <em>sort of</em>
+              </p>
+              <p>WIT only supported so much</p>
             </div>
             <div style="flex: 0 0 40%">
               <pre><code class="language-wit" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
@@ -1320,15 +1355,15 @@ interface entity {
             </div>
           </div>
           <aside class="notes">
-            Luckily, the Bytecode Alliance have a solution for this:
-            wit-bindgen. Unluckily, it was still in development when we picked
-            it up, and we discovered that it was part of the greater Component
-            Model proposal, which was still being designed. This meant that we
-            were following a changing implementation and spec, which led to
-            churn on our part. The interface is specified in WIT, which is an
-            interface definition language for the Component Model. It supports a
-            subset of what Rust supports, which meant we had to be careful in
-            how we designed our API.
+            Luckily, the Bytecode Alliance had a solution for this: wit-bindgen.
+            Unluckily, it was still in development when we picked it up, and we
+            discovered that it was part of the greater Component Model proposal,
+            which was still being designed. This meant that we were following a
+            changing implementation and spec, which led to churn on our part.
+            The interface is specified in WIT, which is an interface definition
+            language for the Component Model, which you can see an example of
+            here. It supports a subset of what Rust supports, which meant we had
+            to be careful in how we designed our API.
           </aside>
         </section>
 
@@ -1337,13 +1372,13 @@ interface entity {
           <h2>Using WebAssembly for Scripting</h2>
           <h3>wit-bindgen</h3>
           <div style="display: flex; align-items: center; height: 80%">
-            <div style="flex: 0 0 40%">
-              <p>Still need glue code</p>
-              <p>Data model doesn’t quite align</p>
+            <div style="flex: 0 0 45%">
+              <p>Still needed glue code</p>
+              <p>Data model didn't quite align</p>
               <p>Only a few languages supported</p>
             </div>
-            <div style="flex: 0 0 60%">
-              <pre><code class="language-rust" style="font-size: 0.6em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
+            <div style="flex: 0 0 55%">
+              <pre><code class="language-rust" style="font-size: 0.7em; white-space: pre-wrap; line-height: 1.2em;" data-trim data-noescape>
 // Rust implementation of the WIT interface
 pub fn exists(entity: EntityId) -&gt; bool {
     wit::entity::exists(entity.into_bindgen())
@@ -1362,13 +1397,15 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
             </div>
           </div>
           <aside class="notes">
-            We had to write glue code in both the host and the guest to wrap the
-            generated WIT code to make it ergonomic to use. In hindsight, we
-            should have considered writing our own binding layer - WIT is great,
-            but it wasn't the right fit for our constraints. Also, wit-bindgen
-            only supports a few languages, and having to write additional glue
-            code effectively limited us to Rust because we didn’t have the time
-            for anything else.
+            Unfortunately, the generated WIT code wasn't ergonomic, so we still
+            had to write our own glue code for the guest API. Because of this,
+            we were effectively stuck with a Rust guest, despite ostensibly
+            being able to use any language with WASM. In hindsight, we should
+            have considered writing our own binding layer - WIT is great, and I
+            wish the best for it, but it wasn't the right fit for our
+            constraints. Also, wit-bindgen's language support was limited; even
+            if we did support other guests, the choices would have been very
+            limited, and would not have included scripting languages.
           </aside>
         </section>
 
@@ -1390,27 +1427,30 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
                 padding: 0;
                 margin: 0;
                 line-height: 1.8;
-                text-align: center;
+                text-align: right;
               "
             >
-              <li>wasm32-wasi is less of a lie!</li>
+              <li>
+                <code>wasm32-wasi</code> (now <code>wasm32-wasip1</code>) is
+                less of a lie!
+              </li>
               <li>We can use it for guest code 😀</li>
-              <li>But we still need to implement it…</li>
-              <li>preview1 != preview2</li>
+              <li>but it still needs implementation… 😭</li>
+              <li><code>preview1</code> ≠ <code>preview2</code></li>
             </ul>
           </div>
           <aside class="notes">
-            Next up, remember how I mentioned that wasm32-unknown-unknown
-            doesn't implement any system interfaces? Luckily, that’s less of a
-            problem for our guest code; we can use wasm32-wasi, which uses the
-            WebAssembly System Interface. Our engine - the host - can then
-            implement the host side of the interface, so that the guest can use
-            these APIs without a care in the world. Rust supports the first
+            Earlier, I mentioned that wasm32-unknown-unknown doesn't implement
+            any system interfaces. Luckily, that’s less of a problem for our
+            guest code; we could use wasm32-wasi, powered by the WebAssembly
+            System Interface. Our engine - the host - can then implement the
+            host side of the interface, so that the guest can use these APIs
+            without a care in the world. Rust supports the first preview of
             preview of WASI, but our use of the Component Model forced us onto
             the second preview, which was still in development. This meant we
             had to use an adapter, and have our own custom implementation of the
-            WASI APIs. The APIs were changing, so this was another source of
-            churn for us.
+            WASI APIs. The APIs were frequently changing, leading to more churn
+            for us.
           </aside>
         </section>
 
@@ -1418,11 +1458,11 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
         <section>
           <h2>Using WebAssembly for Scripting</h2>
           <h3>On the web</h3>
-          <p>We can just use the browser's runtime, right?</p>
+          <p>We could just use the browser's runtime, right?</p>
           <aside class="notes">
-            Okay, that’s the desktop done. We use wasmtime and wit-bindgen on
-            the desktop, but we don’t need them on the web, right? We can just
-            use the browser’s runtime, right?
+            After a lot of work, we did eventually get desktop scripting working
+            reasonably well. The next challenge was to get it working on the
+            web. We could just use the browser's runtime, right?
           </aside>
         </section>
 
@@ -1453,9 +1493,13 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
             "
           >
             <div style="flex: 0 0 50%">
-              <p>wasm32-wasi and Component Model don’t exist on the web</p>
-              <p>Luckily, we are not alone</p>
-              <p>Enter wasm-bridge</p>
+              <p>
+                <code>wasm32-wasi</code> and Component Model didn't exist on the
+                web
+              </p>
+              <p>
+                Luckily, we were not alone: thanks, <code>wasm-bridge</code>!
+              </p>
             </div>
             <div
               style="
@@ -1474,15 +1518,14 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
           </div>
           <aside class="notes">
             Our guest code uses wasm32-wasi and the Component Model, neither of
-            which are supported on the web. We had to add a web backend to our
-            WASM implementation, and then add support for the Component Model to
-            that backend. Native support for components on the web will come,
-            but it doesn't exist yet, so we had to figure out a solution for
-            that. Luckily, another developer, Karel, had already encountered
-            this problem, and built wasm-bridge. We added the missing features
-            required for our use-case to wasm-bridge, which let us run our guest
-            code on the web! We're very grateful for Karel's work on
-            wasm-bridge, and we're happy to have contributed to it.
+            which were supported on the web. This meant we had to write a web
+            backend for our scripting, and then wire that backend up to the
+            Component Model. Web support for the Component Model is coming, but
+            wasn't ready when we needed it. Luckily, we were not alone; another
+            developer, Karel, had already encountered this problem, and built
+            wasm-bridge, which wraps WebAssembly components in a JS object,
+            allowing for their use in a web environment. We adapted it to run
+            our guest code on the web.
           </aside>
         </section>
 
@@ -1498,11 +1541,14 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
               height: 80%;
               width: 80%;
               margin: 0 auto;
+              gap: 32px;
             "
           >
             <div style="flex: 0 0 50%">
-              <p>wasm-bridge uses JCO</p>
-              <p>JCO is JavaScript</p>
+              <p><code>wasm-bridge</code> used <code>jco</code></p>
+              <p>
+                <code>jco</code> wrapped WebAssembly components in JavaScript
+              </p>
               <p>JavaScript FFI has overhead</p>
 
               <img src="media/oh-no.png" alt="oh no" style="width: 50%" />
@@ -1524,13 +1570,12 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
           </div>
           <aside class="notes">
             However... wasm-bridge is based upon the Bytecode Alliance's JCO
-            project, which wraps WebAssembly components in a JS object.
-            wasm-bridge wraps the resulting JavaScript code with a Rust
-            interface. The problem with this is that all FFI goes through
-            JavaScript, which is *very* slow. We optimised this as much as we
-            could, but we came to the conclusion that we needed to remove the JS
-            from the equation. This was the main cause of our performance issues
-            on the web.
+            project, which wrapped WebAssembly components in a JS object.
+            wasm-bridge wrapped the resulting JavaScript code with a Rust
+            interface. This resulted in double-FFI with JavaScript, which was
+            *very* slow. We optimised this as much as we could, but we came to
+            the conclusion that we needed to remove the JS from the equation.
+            This was the main cause of our performance issues on the web.
           </aside>
         </section>
 
@@ -1539,7 +1584,7 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
           <h2>Using WebAssembly for Scripting</h2>
           <h3>On the web</h3>
           <div style="margin: 0 auto">
-            <p>wasm_component_layer could save us?</p>
+            <p><code>wasm_component_layer</code> maybe could have saved us?</p>
             <img
               src="media/wasm-component-layer.png"
               alt="wasm_component_layer"
@@ -1549,9 +1594,10 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
           <aside class="notes">
             We found Douglas Dwyer's wasm_component_layer, which provides a
             runtime-agnostic implementation of the Component Model. We started
-            contributing to it to fill in the holes, and we were in the process
-            of switching to it. However, we were unable to complete this before
-            we paused development on Ambient.
+            integrating it, but were unable to complete the integration before
+            moving on, which meant the web client was never fixed. Given that
+            the scripting was still likely to run on the same thread, this would
+            have only partially addressed the problem.
           </aside>
         </section>
 
@@ -1576,22 +1622,22 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
                 text-align: center;
               "
             >
-              <li>Debugging</li>
-              <li>Module compile time</li>
+              <li>Debugging sucks</li>
+              <li>Module compile time is slow</li>
               <li>No ability to interpret</li>
-              <li>Other language use</li>
+              <li>Other languages never happened</li>
             </ul>
           </div>
           <aside class="notes">
             There were other issues we encountered with WebAssembly. Debugging
             is difficult. It's theoretically possible - we had it working
-            outside of Ambient - but we couldn't get it working in Ambient.
-            You're forced to use print debugging. Wasmtime compiles modules as
-            it loads them, which takes time. With many modules, it can stall
-            startup for many seconds, as you saw in the demo. There’s no way to
-            quickly interpret code - you *have* to compile a module. Finally, we
-            never did get around to trying out other languages. This basically
-            means there was no point in using WebAssembly.
+            outside of Ambient - but we couldn't get it working inside, forcing
+            you to use print debugging. Wasmtime compiles modules as it loads
+            them, which takes time. With many modules, it can stall startup for
+            many seconds, as you saw in the demo. There was no way to quickly
+            interpret code, which meant modules *had* to be compiled. Finally,
+            we never got around to trying out other languages, which meant there
+            was ultimately no point in using WebAssembly.
           </aside>
         </section>
 
@@ -1616,17 +1662,18 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
                 text-align: center;
               "
             >
-              <li>There’s certainly promise, but…</li>
-              <li>there are also major problems.</li>
+              <li>
+                There’s certainly promise, but... there are also major problems.
+              </li>
               <li>Just use a conventional scripting language.</li>
             </ul>
           </div>
           <aside class="notes">
-            In conclusion: WebAssembly shows promise for this use case, but like
-            WebGPU, the pieces still need to come together. You can’t run many
-            scripting-relevant languages on it, binding is difficult, and
-            supporting both desktop and web is very challenging. We’d recommend
-            a conventional scripting language like Lua, Ruby or Python -
+            In conclusion: WebAssembly showed promise for this use case, but
+            like WebGPU, the pieces still need to come together. You can’t run
+            many scripting-relevant languages on it, binding is difficult, and
+            supporting both desktop and web is very challenging. I’d recommend a
+            conventional scripting language like Lua, Ruby or Python -
             especially as all of those now have Rust implementations!
           </aside>
         </section>
@@ -1635,12 +1682,12 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
         <section>
           <h1 class="r-fit-text">Our biggest issue</h1>
           <aside class="notes">
-            Finally, our biggest issue… is that people just weren’t interested.
+            Finally, our biggest issue… was that people just weren’t interested.
             We built a lot of cool tech, but we couldn’t get people to care. I
-            believe that with enough time, we could have made this work, but we
-            just couldn’t spend that time. Because of this, we’re currently
-            working on something new. I can’t tell you what it is just yet, but
-            I can say that it’s still related to gamedev.
+            believe that with enough time, we could have made this work, but
+            that time wasn't at hand. After this, we experimented with
+            AI-enhanced gamedev under the Braindump banner, but that's a story
+            for another talk.
           </aside>
         </section>
 
@@ -1675,56 +1722,67 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
             </ul>
           </div>
           <aside class="notes">
-            So, what did we learn from all of this? We are confident that Rust
-            was the right choice for the engine, and we are continuing to use it
-            in our new projects. We just didn’t know what we wanted to build,
-            and we were subject to the limitations of technologies out of our
-            control. By the time Ambient was born, Bevy and other engines were
-            actively developed and were closer to what we needed. We should have
-            investigated how much work it would have been to switch to them. We
-            tried to retroactively add web support, but this should have been a
-            core part of the engine from the beginning. At a minimum, we should
-            have gone with a more conventional scripting language and WebGL over
-            WebAssembly and WebGPU. These are fantastic technologies, but
-            they're just not ready yet: WebAssembly's ecosystem is still
-            maturing, and WebGPU has growing pains. Finally, we needed to meet
-            people where they were. We built all of this cool technology, but we
-            couldn’t convince people to use it. We needed to talk to users first
-            and solve the problems they had, not the problems we thought they
-            had.
+            So, what did we learn from all of this? We were confident that Rust
+            was the right choice for the engine. We just didn’t know what we
+            wanted to build, and we were subject to the limitations of
+            technologies out of our control. By the time Ambient was born, Bevy
+            and other engines were actively developed and were closer to what we
+            needed. We should have investigated how much work it would have been
+            to switch to them. We tried to retroactively add web support, but
+            this should have been a core part of the engine from the beginning.
+            At a minimum, we should have gone with a more conventional scripting
+            language and WebGL over WebAssembly and WebGPU. These are fantastic
+            technologies, but they're just not ready yet: WebAssembly's
+            ecosystem is still maturing, and WebGPU has growing pains. Finally,
+            we needed to meet people where they were. We built all of this cool
+            technology, but we couldn’t convince people to use it. We needed to
+            talk to users first and solve the problems they had, not the
+            problems we thought they had.
           </aside>
         </section>
 
         <!-- Conclusion slide -->
         <section>
           <h2>Conclusion and Q&A</h2>
+          <p>
+            <a href="https://github.com/AmbientRun/Ambient"
+              >https://github.com/AmbientRun/Ambient</a
+            >
+          </p>
           <div
             style="
               display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
+              justify-content: center;
+              align-items: center;
               width: 100%;
+              gap: 32px;
             "
           >
-            <div style="flex: 1">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                flex: 1;
+                justify-content: flex-end;
+              "
+            >
+              <img
+                src="media/philpax.png"
+                alt="Philpax avatar"
+                style="max-width: 240px"
+              />
+            </div>
+            <div style="flex: 1; text-align: left">
               <p>Mithun Hunsur</p>
               <p><em>@</em><a href="https://philpax.me">philpax.me</a></p>
             </div>
-            <div style="flex: 1">
-              <p>ambient.run</p>
-              <p>
-                <a href="https://github.com/AmbientRun/Ambient"
-                  >github.com/AmbientRun/Ambient</a
-                >
-              </p>
-            </div>
           </div>
           <aside class="notes">
-            Thanks for listening! You can find us at ambient.run or at the
-            GitHub repo, but we're not actively working on the runtime at this
-            time. You can find me on Bluesky at @philpax.me (that's also my
-            website!) I’ll take questions now, but I'll be around if you'd like
-            to talk more.
+            Thanks for listening! You can find the Ambient repo at the link
+            above, but it hasn't been updated since 2023, and many of the
+            associated services are now down. You can find me on Bluesky at
+            @philpax.me (also my website!) I'll take questions now, but I'll be
+            around if you'd like to talk more.
           </aside>
         </section>
       </div>
