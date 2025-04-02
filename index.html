@@ -32,14 +32,14 @@
             <p>
               G'day everyone! I'm here today to talk to you about Ambient, the
               open-source cross-platform multiplayer game runtime that I worked
-              on from early 2023 to late 2023.
+              on from early 2022 to late 2023.
             </p>
             <p>
               I'll tell you about the project, what we did well, and what went
-              wrong. This is an adapted version of my talk at Rust Nation UK
-              2024; Ambient is dead and won't be coming back, so I can speak
-              with more finality. There are also things I'm leaving out for
-              time, but I'd be happy to discuss them with you after the talk.
+              wrong. This is an adapted version of a talk I gave at Rust Nation
+              UK 2024; Ambient is dead and won't be coming back, so I can speak
+              with more certainty. There are also things I'm leaving out for
+              time, but I'd be happy to discuss them after the talk.
             </p>
           </aside>
         </section>
@@ -50,7 +50,10 @@
           <h3>Mithun Hunsur</h3>
           <div style="text-align: left">
             <p><em>currently</em> not doing Rust professionally 😭</p>
-            <p><em>formerly</em> <strong>Senior Engineer</strong> @ Ambient</p>
+            <p>
+              <em>formerly</em> <strong>Senior Engineer</strong> @ Ambient /
+              Dims / Braindump
+            </p>
             <p>
               <em>formerly</em> <strong>Multiplayer Programmer</strong> @
               Avalanche Studios
@@ -64,23 +67,19 @@
           <aside class="notes">
             <p>
               First off, let me introduce myself. My name's Mithun, but I go by
-              Philpax online. I'm all over the shop, but my home base is in
-              games, where I've been working on multiplayer projects for over a
-              decade.
+              Philpax online. I work on all kinds of things, but my home base is
+              in games, where I've been working on multiplayer projects for over
+              a decade.
             </p>
             <p>
-              During 2022 to late 2024, I worked at Ambient, also known as Dims
-              and Braindump, to explore new ways of creating multiplayer games
-              to enable both local and global collaboration.
+              During the last three years, I worked at Ambient, also known as
+              Dims and Braindump, to explore new ways of creating multiplayer
+              games with both local and global collaboration.
             </p>
             <p>
-              Before that, I worked at Avalanche Studios as a triple-A gamedev,
-              and well before that, I worked on a volunteer project to make Just
-              Cause 2 a massively multiplayer game with scripting.
-            </p>
-            <p>
-              Nowadays, I work on productionising AI as a machine learning
-              engineer at my current workplace.
+              Before that, I worked at Avalanche Studios as a multiplayer
+              programmer, and well before that, I worked on a volunteer project
+              to make Just Cause 2 a massively multiplayer game with scripting.
             </p>
             <p>
               In my free time, I work on all kinds of things, including
@@ -103,7 +102,7 @@
             </p>
             <p>
               We were a VC-backed startup that wanted to solve this problem and
-              make it easy for people to build multiplayer games. We took on a
+              make it easy for people to make multiplayer games. This was a
               large burden, and I'm proud of how far we got, but you'll see why
               it didn't work out.
             </p>
@@ -118,16 +117,16 @@
         >
           <aside class="notes">
             <p>
-              Getting to Ambient took a few tries. What you're seeing here was
-              our first attempt to solve multiplayer game development. This was
+              We didn't start with Ambient. What you're seeing here was our
+              first attempt to solve multiplayer game development. This was
               Dims, a collaborative low-code game development platform, also
               built in Rust, almost entirely created by our CPTO, Fredrik Norén.
             </p>
             <p>
-              You can build worlds, hang out together, and share them with
+              You could build worlds, hang out together, and share them with
               others. This was made possible by a multiplayer, concurrent
-              editor. I joined around the time of this video to help scale up
-              Dims.
+              editor. I joined around the time this video was recorded to help
+              scale up Dims.
             </p>
             <p>
               However, worlds aren't games; to bring your project to life, we
@@ -362,15 +361,15 @@
           </div>
           <aside class="notes">
             <p>
-              Now, let's talk features. We were a batteries-included runtime, so
-              we made sure our engine had everything you might need to build a
-              game, as you can see here.
+              So what features did Ambient have? We were a batteries-included
+              runtime, so we made sure our engine had almost everything you
+              might need to build a game, as you can see here.
             </p>
             <p>
-              At the time, we believed we offered more of a batteries-included
-              experience than Bevy, especially for multiplayer games. However,
-              Bevy has come a long way since, including the surrounding
-              ecosystem.
+              At the time, we believed we offered more of a cohesive experience
+              than Bevy, especially for multiplayer games. However, all credit
+              due, Bevy has come a long way since, especially with the
+              surrounding ecosystem.
             </p>
             <p>
               That being said, the most innovative items on this list are the
@@ -417,14 +416,14 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
               Like many modern game engines, we used an entity component system
               - an ECS - in which entities have components, which are pieces of
               data, and these entities and their components are acted upon by
-              systems. However, we wanted to go a step further.
+              systems. However, this was just the start.
             </p>
             <p>
               I grew up with Garry's Mod, where you could load code and assets
               at runtime to extend the game experience, and I evolved that in
-              Just Cause 2: Multiplayer. We wanted to build a modern take, which
-              led us to our runtime-loadable packages, inspired heavily by Rust
-              crates.
+              Just Cause 2: Multiplayer. We wanted to take that even further
+              still, which led us to our runtime-loaded packages, inspired
+              heavily by Rust crates.
             </p>
             <p>
               These can add new components, bring in new assets, load new WASM
@@ -433,8 +432,8 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
             </p>
             <p>
               This was an evolution of ideas that I'd been working on since
-              JC2:MP. The core engine is designed to be microkernel-like,
-              providing core functionality, but all game logic lives in the
+              JC2:MP. The core engine is designed to be microkernel-like and
+              provide core functionality, but all game logic lives in the
               scripting layer, so that it can be endlessly modified and composed
               at runtime.
             </p>
@@ -447,12 +446,13 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
           <h2>Tangent</h2>
           <h3>a simple 3D multiplayer game</h3>
           <aside class="notes">
+            <p>Before we continue, I'd like to show you a demo of Ambient.</p>
             <p>
               Unfortunately, as our web services have gone down, I can't show
               you the full Ambient experience; this means no web client, no
               cloud packages, and no modding. However, I can at least show you
               what the multiplayer experience is like with Tangent, a simple 3D
-              multiplayer game where you control a protagonist that can run
+              multiplayer game where you control a protagonist who can run
               around, get into a hovercraft, and shoot at each other. I can also
               briefly take you through how packages are structured, and how
               scripting works.
@@ -518,23 +518,25 @@ pub fn main() {
               As you might have noticed in the demo, we used Rust as our
               scripting language. This is made possible through WebAssembly -
               more on that later. We liked using Rust for scripting, and it let
-              us share a lot of code, which was fantastic for letting us change
-              things on the host and the guest at the same time.
+              us share a lot of code, which was very useful for evolving the
+              API.
             </p>
             <p>
               However, the language is still somewhat complex, despite our
               attempts to hide it under the API. The compile times were OK, but
               not fantastic: game developers appreciate fast iteration times of
-              a few seconds at most, but it could be 15-30 seconds with Ambient.
+              a few seconds, but Ambient iteration times were closer to 15 to 30
+              seconds.
             </p>
             <p>
               We also had a concern that the use of Rust might scare off
               potential users; we found that users were fine with it once they
-              got used to it, but it was definitely a barrier to entry. I
-              believe a slightly higher-level language would be better for this
-              use case, but I'm not sure what that would look like. Perhaps
-              Grain, which is a ML-like language targeting WebAssembly, would be
-              a good fit.
+              got used to it, but it was definitely a barrier to entry.
+            </p>
+            <p>
+              I believe a higher-level language would be better for this use
+              case, but I'm not sure what that would look like. Grain, which is
+              a ML-like language targeting WebAssembly, might be a good fit.
             </p>
           </aside>
         </section>
@@ -584,15 +586,15 @@ attributes = ["Debuggable", "Networked", "Store"]
           </div>
           <aside class="notes">
             <p>
-              Our packages are defined as TOML, including their components, and
-              this includes core Ambient definitions, as you can see here.
-              However, we need to project these definitions into the Rust code
-              so that they can be used.
+              Next, our packages are defined in TOML, including their
+              components, and this includes core Ambient definitions, as you can
+              see here. However, these definitions must be projected into the
+              Rust code so that they can be used.
             </p>
             <p>
               We initially used procedural macros for this, but we switched to
-              build scripts because rust-analyzer struggled and our users
-              appreciated being able to see the generated code.
+              build scripts because rust-analyzer struggled to detect changes
+              and our users appreciated being able to see the generated code.
             </p>
             <p>
               These files are placed in `src`, not `OUT_DIR`, to make it easier
@@ -601,7 +603,7 @@ attributes = ["Debuggable", "Networked", "Store"]
               made it easier for us to develop.
             </p>
             <p>
-              Another note worth mentioning here is that I would recommend
+              Another thing worth mentioning is that I would highly recommend
               versioning your generated code; it is tremendously useful to be
               able to see exactly what changes between generations.
             </p>
@@ -657,6 +659,7 @@ attributes = ["Debuggable", "Networked", "Store"]
             </div>
           </div>
           <aside class="notes">
+            <p>With a project like this, there are many subprojects.</p>
             <p>
               Rust workspaces do a pretty good job of grouping together
               packages, but they don't support cross-toolchain packages (that
@@ -670,14 +673,15 @@ attributes = ["Debuggable", "Networked", "Store"]
             </p>
             <p>
               To help with this, we used the `cargo-xtask` pattern. We built a
-              tool in Rust in our root workspace, `campfire`, that could handle
+              tool in Rust in our root workspace, `campfire`, that would handle
               meta-development tasks like building all of the clients, updating
               package versions, deploying the packages, and more.
             </p>
             <p>
-              This was then aliased using `cargo/config.toml` to make it easy to
-              access. This was an upfront cost, but it paid for itself many
-              times over, especially when building for multiple platforms.
+              This was then aliased using `cargo/config.toml` so that it could
+              be used as `cargo cf`. This was an upfront cost, but it paid for
+              itself many times over, especially when building for multiple
+              platforms.
             </p>
           </aside>
         </section>
@@ -855,7 +859,7 @@ ambient_ecs.workspace = true
             <p>
               We believed that this would be straightforward. We had already
               built on top of `wgpu` and `winit`, which would abstract over
-              platform specifics. It was not.
+              platform specifics. As you might have guessed, it was not.
             </p>
           </aside>
         </section>
@@ -932,6 +936,7 @@ ambient_ecs.workspace = true
                   margin: 0;
                   line-height: 1.8;
                   text-align: center;
+                  font-size: 0.9em;
                 "
               >
                 <li><code>wasm32-unknown-unknown</code> is a lie</li>
@@ -960,15 +965,16 @@ ambient_ecs.workspace = true
             </p>
             <p>
               Our existing code targeted Tokio, which has limited support for
-              running on the web. Additionally, you don't control task
+              running on the web. Additionally, you can't control task
               scheduling on the web, unlike on desktop.
             </p>
             <p>
               You must use `wasm-bindgen` and `web-sys` to interact with the JS
               APIs and replace that missing functionality. We built our own
-              system abstraction to cover the missing APIs, and used `clippy`
-              and `cargo-deny` to help with the migration. Any calls we left
-              behind would panic at runtime on the web.
+              system abstraction to help with this, and used `clippy` and
+              `cargo-deny` to ensure it was being used. Otherwise, we would run
+              into random panics on the web when something tried to get the
+              time.
             </p>
           </aside>
         </section>
@@ -998,7 +1004,7 @@ ambient_ecs.workspace = true
             <p>
               Next up, graphics. From the start, we used `wgpu`, which is a
               fantastic abstraction over the various graphics APIs, including
-              WebGPU, and meant to serve as the WebGPU implementation for
+              WebGPU, and is meant to serve as the WebGPU implementation for
               Firefox and others.
             </p>
             <p>
@@ -1056,9 +1062,9 @@ ambient_ecs.workspace = true
               the web, which was expected, but still hurt.
             </p>
             <p>
-              WebGPU support across browsers was basically limited to
-              Windows/Mac Chrome; it is slightly better now, but only slightly.
-              WebGPU is still off by default on both Linux and Firefox.
+              WebGPU support across browsers was limited to Chrome on Windows or
+              Mac; it is slightly better now, but only slightly. WebGPU is still
+              off by default on both Linux and Firefox.
             </p>
             <p>
               Each browser has a slightly different interpretation of the spec,
@@ -1107,10 +1113,9 @@ ambient_ecs.workspace = true
           </div>
           <aside class="notes">
             <p>
-              For networking, we used the `quinn` library, which implements the
-              QUIC protocol. QUIC is a fantastic protocol that provides secure
-              reliable and unreliable data streams, which gave us a strong
-              transport layer for our networking.
+              For the transport layer of our networking, we used the `quinn`
+              library, which implements the QUIC protocol, which provides secure
+              reliable and unreliable data streams.
             </p>
             <p>
               WebTransport is a sibling protocol of QUIC that shares a great
@@ -1171,11 +1176,11 @@ ambient_ecs.workspace = true
             <p>
               Our WASM scripting had severe overhead in the web environment.
               This was catastrophic, and we added a few workarounds - including
-              dropping frames to allow networking to catch up and experimenting
-              with Web Workers.
+              experimenting with Web Workers and dropping frames to allow
+              networking to catch up.
             </p>
             <p>
-              But we did not come up with a general solution, and the web
+              However, we did not come up with a general solution, and the web
               client's experience very quickly degraded under load.
             </p>
           </aside>
@@ -1215,14 +1220,14 @@ ambient_ecs.workspace = true
           </div>
           <aside class="notes">
             <p>
-              Let's talk about scripting. I've built my fair share of scriptable
-              applications, and I've typically done this with Lua or other
-              languages amenable to embedding.
+              Next, let's talk about scripting. I've built my fair share of
+              scriptable applications, and I've typically done this with Lua or
+              other languages amenable to embedding.
             </p>
             <p>
               A problem that I've always encountered while doing so, however, is
               that you're locked into whatever language you've embedded. The
-              only way to add more languages was to add more interpreters.
+              only way to add more languages is to add more interpreters.
             </p>
             <p>
               This time around, we decided to use WebAssembly for scripting,
@@ -1350,7 +1355,7 @@ interface entity {
           </div>
           <aside class="notes">
             <p>
-              Luckily, the Bytecode Alliance had a solution for this:
+              Luckily for us, the Bytecode Alliance had a solution for this:
               wit-bindgen. Unluckily, it was still in development when we picked
               it up, and we discovered that it was part of the greater Component
               Model proposal, which was still being designed. This meant that we
@@ -1425,13 +1430,14 @@ interface entity {
               the world.
             </p>
             <p>
-              Rust supports the first preview of preview of WASI, but our use of
-              the Component Model forced us onto the second preview, which was
-              still in development. This meant we had to use an adapter, and
-              have our own custom implementation of the WASI APIs.
+              Rust supports the first preview of WASI, but our use of the
+              Component Model forced us onto the second preview, which was still
+              in development. This meant we had to use an adapter, and have our
+              own custom implementation of the WASI APIs.
             </p>
             <p>
-              The APIs were frequently changing, leading to more churn for us.
+              The WASI APIs were frequently changing, leading to more churn for
+              us.
             </p>
           </aside>
         </section>
@@ -1472,7 +1478,7 @@ interface entity {
             <p>
               This was the main cause of our performance issues on the web. We
               were unable to fix this in time, as it was baked into how Ambient
-              on the runtime was implemented.
+              on the web was implemented.
             </p>
           </aside>
         </section>
@@ -1598,12 +1604,13 @@ interface entity {
           </ul>
           <aside class="notes">
             <p>
-              We wanted to make all of our packages naturally interoperate, so
-              that anyone could mod any game. Unfortunately, this is still an
-              active research problem: it is very difficult to have all of these
-              disparate packages from disparate authors function together as a
-              cohesive whole, especially without any prior coordination. It
-              needed a lot more time in the oven.
+              Before, I mentioned our packages. We wanted to make all of our
+              packages naturally interoperate, so that anyone could mod any
+              game. Unfortunately, this is still an active research problem: it
+              is very difficult to have all of these disparate packages from
+              disparate authors function together as a cohesive whole,
+              especially without any prior coordination. It needed a lot more
+              time in the oven.
             </p>
             <p>
               I think this problem is fascinating, but cracking it requires
@@ -1648,16 +1655,17 @@ interface entity {
           <aside class="notes">
             <p>
               We used Dioxus, a full-stack Rust web framework, for the Ambient
-              platform. This was in 2023, so I know it's gotten better now - a
+              website. This was in 2023, so I know it's gotten better now - a
               lot of the pain points we ran into are gone, thanks to clever
               tricks and engineering - but it was very much not the right tool
-              for the job.
+              for the job at the time.
             </p>
             <p>
               We loved using Rust, but frontend development is all about
               iteration, and Rust in Dioxus in 2023 was not germane to that. It
               was a painful experience, with broken formatting, clones all over
-              the place, and a very clearly WIP developer experience.
+              the place, and a very clearly work-in-progress developer
+              experience.
             </p>
             <p>
               No fault to them - they were doing their best, and it was on us
@@ -1703,13 +1711,17 @@ interface entity {
               This is one of my bigger regrets: I think an editor is key to game
               engine adoption, especially when you're on the backfoot, and our
               not having one raised the barrier to entry and made the time to
-              fun engagement higher.
+              fun higher.
             </p>
             <p>
               I should have been able to create a level for Tangent without
               having to specify my level in code like it's the 70s. This is
               something Bevy also struggles with to some extent, but they're
               making moves towards fixing it.
+            </p>
+            <p>
+              An idea I considered was to use Blender as the editor, but this
+              would have required a lot of integration.
             </p>
           </aside>
         </section>
@@ -1751,19 +1763,19 @@ interface entity {
               assumption no longer held, and we did not update for it. We
               optimised for developer experience first - both ours and package
               makers - which meant we wanted to ignore the complications of
-              real-world networking. Our synchronization primarily relied on
-              sending ECS component diffs directly between server and client, a
-              method that offers simplicity but is highly sensitive to network
-              latency, leading to visual inconsistencies and lag when delays
-              occur. Unfortunately, this came back to bite us, and it's not a
-              trivial thing to retrofit.
+              real-world networking.
+            </p>
+            <p>
+              Our synchronization primarily relied on sending ECS component
+              diffs directly between server and client, which offers simplicity
+              but is highly sensitive to network latency, which led to visual
+              inconsistencies and lag when delays occurred. Unfortunately, this
+              came back to bite us, and it was not a trivial thing to retrofit.
             </p>
             <p>
               We attempted to work around this by allocating cloud servers near
               users, but this was both expensive and not useful for people
-              playing across continents; one of our team members was based in
-              Canada, and it was obvious that there was already a problem, but
-              we didn't have the time to fix it.
+              playing across continents.
             </p>
           </aside>
         </section>
@@ -1774,13 +1786,16 @@ interface entity {
           <aside class="notes">
             <p>
               Finally, our biggest issue... was that people just weren’t
-              interested. We did not find product-market fit. We built a lot of
-              cool tech, but we couldn’t get people to care. I believe that with
-              enough time, we could have made this work, but when you take VC
-              funding, you're expected to deliver.
+              interested.
             </p>
             <p>
-              After this, we experimented with AI-enhanced gamedev under the
+              We did not find product-market fit. We built a lot of cool tech,
+              but we couldn’t get people to care. I believe that with enough
+              time, we could have made this work, but when you take VC funding,
+              you're expected to deliver.
+            </p>
+            <p>
+              After this, we experimented with AI-powered gamedev under the
               Braindump banner, but that's a story for another talk.
             </p>
           </aside>
@@ -1815,7 +1830,6 @@ interface entity {
               </li>
               <li>Implement web support from day one</li>
               <li>Use mature technologies</li>
-              <li>Use conventional scripting</li>
               <li>Spend "novelty budget" well</li>
               <li>Build things people want</li>
             </ul>
@@ -1824,12 +1838,12 @@ interface entity {
             <p>
               So, what did we learn from all of this? We were confident that
               Rust was the right choice for the engine. We just didn't know what
-              we wanted to build.
+              it was that we were building.
             </p>
             <p>
               By the time Ambient was born, Bevy was closer to what we needed.
-              We should have investigated how hard it would have been to switch
-              to it.
+              We should have investigated how hard it would have been to adopt
+              it.
             </p>
             <p>
               We tried to retroactively add web support, but this should have
@@ -1893,7 +1907,7 @@ interface entity {
           </div>
           <aside class="notes">
             <p>
-              Thanks for listening! I still believe in the fundamental dream
+              So, thanks for listening! I still believe in the fundamental dream
               that Ambient represents - an open-source multiplayer-first game
               engine designed for shared creation - but our time with the
               concept is over.
@@ -1903,10 +1917,13 @@ interface entity {
               above, but it hasn't been updated since 2023, and many of the
               associated services are now down.
             </p>
-            <p>You can find me on Bluesky at @philpax.me (also my website!)</p>
             <p>
-              I'll take questions now, but I'll be around if you'd like to talk
-              more.
+              You can find me on Bluesky at @philpax.me (that's also my
+              website!)
+            </p>
+            <p>
+              Anyhow, I'll take questions now, but I'll be around if you'd like
+              to talk more.
             </p>
           </aside>
         </section>
