@@ -38,7 +38,8 @@
               I'll tell you about the project, what we did well, and what went
               wrong. This is an adapted version of my talk at Rust Nation UK
               2024; Ambient is dead and won't be coming back, so I can speak
-              with more finality.
+              with more finality. There are also things I'm leaving out for
+              time, but I'd be happy to discuss them with you after the talk.
             </p>
           </aside>
         </section>
@@ -414,7 +415,7 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
           <aside class="notes">
             <p>
               Like many modern game engines, we used an entity component system
-              — an ECS — in which entities have components, which are pieces of
+              - an ECS - in which entities have components, which are pieces of
               data, and these entities and their components are acted upon by
               systems. However, we wanted to go a step further.
             </p>
@@ -430,55 +431,12 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
               modules, and even message each other. And of course, they can
               depend on other packages.
             </p>
-          </aside>
-        </section>
-
-        <!-- Centered bullet point slide -->
-        <section>
-          <h2>Packages & modding</h2>
-          <ul
-            style="
-              list-style: none;
-              padding: 0;
-              margin: 0;
-              line-height: 1.8;
-              text-align: center;
-            "
-          >
-            <li>Evolution of long-held ideas</li>
-            <li>"Microkernel" game engine</li>
-            <li>Flexibility, robustness, dynamic composability</li>
-            <li>Get it working, then make it good</li>
-            <li>Maybe Verse will crack it</li>
-          </ul>
-          <aside class="notes">
             <p>
-              Our modding solution was impressive for the time: it was an
-              evolution of ideas that I'd been working on since JC2:MP. The core
-              engine provides orchestration and all of the functionality
-              necessary to make the game go, like a microkernel, but all game
-              logic is in scripting with the intent of making it more robust to
-              malfunctioning components, allowing for user choice, and generally
-              providing for a kind of flexibility not seen in many platforms.
-            </p>
-            <p>
-              However, as I discovered at the time, and am still discovering,
-              this is still an active research problem: it is very difficult to
-              have all of these disparate packages from disparate authors
-              function together as a cohesive whole, especially with no prior
-              coordination.
-            </p>
-            <p>
-              I think this problem is fascinating, but cracking it requires
-              significant R&D beyond what we had available: my hope was that we
-              could rely on "worse is better", ship a v1, and then iterate on it
-              to get to a better place.
-            </p>
-            <p>
-              I'd love to know more about Unreal Engine's Verse language, which
-              is meant to address this, but right now it's the Fortnite
-              scripting language, so I guess we'll have to wait a few more years
-              to find out.
+              This was an evolution of ideas that I'd been working on since
+              JC2:MP. The core engine is designed to be microkernel-like,
+              providing core functionality, but all game logic lives in the
+              scripting layer, so that it can be endlessly modified and composed
+              at runtime.
             </p>
           </aside>
         </section>
@@ -515,7 +473,7 @@ orbit_camera = {id = "tijz7x6fimbgu24sbbtp4n1lhfxbgb1p", version = "0.3.2"}
 
         <!-- Slide about using Rust as scripting language with code example -->
         <section>
-          <h2 style="font-size: 1.8em">Using Rust as a Scripting Language</h2>
+          <h2>Using Rust for Scripting</h2>
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 50%; font-size: 0.8em; text-align: right">
               <p>Easy to share code with the host</p>
@@ -581,14 +539,15 @@ pub fn main() {
           </aside>
         </section>
 
-        <!-- Code generation slide showing data model in TOML -->
+        <!-- Data model slide showing data model in TOML -->
         <section>
-          <h2>Extreme Code Generation</h2>
-          <h3 style="margin-bottom: 0">Data model</h3>
+          <h2 style="margin-bottom: 0">Data model and code generation</h2>
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 40%">
-              <p>Package definitions in TOML</p>
-              <p>Definitions need to be used in code</p>
+              <p>Package definitions in TOML, but projected into Rust</p>
+              <p>Build scripts > proc macros</p>
+              <p><code>src</code>, not <code>OUT_DIR</code></p>
+              <p>Version your generated code!</p>
             </div>
             <div style="flex: 0 0 60%">
               <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1.2em;" class="language-toml" data-trim data-noescape>
@@ -624,128 +583,16 @@ attributes = ["Debuggable", "Networked", "Store"]
             </div>
           </div>
           <aside class="notes">
-            Our packages are defined as TOML, including their components, and
-            this includes core Ambient definitions, as you can see here.
-            However, we need to project these definitions into the Rust code so
-            that they can be used. That's where our extreme code generation
-            comes in.
-          </aside>
-        </section>
-
-        <!-- Code generation slide showing semantic analysis -->
-        <section>
-          <h2>Extreme Code Generation</h2>
-          <h3 style="margin-bottom: 0">Semantic analysis</h3>
-          <div style="display: flex; align-items: center; height: 80%">
-            <div style="flex: 0 0 40%">
-              <p>Semantic system as library</p>
-              <p>Can be used by both the engine and guest</p>
-            </div>
-            <div style="flex: 0 0 60%">
-              <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1.2em;" class="language-rust" data-trim data-noescape>
-scope:ambient_core::camera (Ambient)
-  imports:
-  component:ambient_core::camera::active_camera (Ambient)
-    type: type:F32 (System)
-    name: "Active camera"
-    description: "The camera with the highest `active_camera` value will be used for rendering. Cameras are also filtered by the `user_id`.\nIf there's no `user_id`, the camera is considered global and potentially applies to all users (if its `active_camera` value is high enough)."
-    default: None
-    attributes:
-      attribute:Debuggable (System)
-      attribute:Networked (System)
-      attribute:Store (System)
-  component:ambient_core::camera::aspect_ratio (Ambient)
-    type: type:F32 (System)
-    name: "Aspect ratio"
-    description: "The aspect ratio of this camera.\nIf `aspect_ratio_from_window` is set, this will be automatically updated to match the window."
-    default: None
-    attributes:
-      attribute:Debuggable (System)
-      attribute:Networked (System)
-      attribute:Store (System)
-  component:ambient_core::camera::aspect_ratio_from_window (Ambient)
-    type: type:EntityId (System)
-    name: "Aspect ratio from window"
-    description: "If attached, the `aspect_ratio` component will be automatically updated to match the aspect ratio of the window. Should point to an entity with a `window_physical_size` component."
-    default: None
-    attributes:
-      attribute:Debuggable (System)
-      attribute:Networked (System)
-      attribute:Store (System)
-              </code></pre>
-            </div>
-          </div>
-          <aside class="notes">
-            The TOML definitions were consumed by our semantic system, which
-            then unifies them and determines how all of the packages are linked
-            together, much like a compiler. The system is a Rust library, so it
-            could be used by the engine at runtime and by guest code at build
-            time. You can see some of the system's diagnostic output here.
-          </aside>
-        </section>
-
-        <!-- Code generation slide showing generated Rust code -->
-        <section>
-          <h2>Extreme Code Generation</h2>
-          <h3 style="margin-bottom: 0">Generation</h3>
-          <div style="display: flex; align-items: center; height: 80%">
-            <div style="flex: 0 0 40%">
-              <div>
-                <p>Semantic → Rust code</p>
-                <p>Build scripts > Proc macros</p>
-                <p><code>src</code>, not <code>OUT_DIR</code></p>
-                <p>Version your generated code!</p>
-              </div>
-            </div>
-            <div style="flex: 0 0 60%">
-              <pre><code style="font-size: 0.45em; white-space: pre-wrap; line-height: 1em;" class="language-rust" data-trim data-noescape>
-                pub mod h3gv2vnpcajq75woh5miemeahfpaku4 {
-                  pub fn entity() -&gt; ambient_api::global::EntityId {
-                    use ambient_api::once_cell::sync::Lazy;
-                    static ENTITY: Lazy&lt;ambient_api::global::EntityId&gt; = Lazy::new(|| {
-                        ambient_api::package::get_entity_for_package_id(&quot;h3gv2vnpcajq75woh5miemeahfpaku4&quot;)
-                            .expect(&quot;Failed to get package entity - was it despawned?&quot;)
-                    });
-                    *ENTITY
-                  }
-
-                  #[doc = &quot; Auto-generated component definitions.&quot;]
-                  pub mod components {
-                    use ambient_api::{
-                        ecs::{Component, __internal_get_component},
-                        once_cell::sync::Lazy,
-                        prelude::*,
-                    };
-
-                    static PLAYER_MOVEMENT_DIRECTION: Lazy&lt;Component&lt;F32&gt;&gt; = Lazy::new(|| {
-                        __internal_get_component(
-                            &quot;h3gv2vnpcajq75woh5miemeahfpaku4::player_movement_direction&quot;,
-                        )
-                    });
-
-                    #[doc = &quot;**Player Movement Direction**: Direction of player movement&quot;]
-                    pub fn player_movement_direction() -&gt; Component&lt;F32&gt; {
-                        *PLAYER_MOVEMENT_DIRECTION
-                    }
-
-                    static TRACK_AUDIO_URL: Lazy&lt;Component&lt;String&gt;&gt; = Lazy::new(|| {
-                        __internal_get_component(&quot;h3gv2vnpcajq75woh5miemeahfpaku4::track_audio_url&quot;)
-                    });
-
-                    #[doc = &quot;**Track Audio URL**: URL of the track audio\n\n*Attributes*: Networked, Debuggable&quot;]
-                    pub fn track_audio_url() -&gt; Component&lt;String&gt; {
-                        *TRACK_AUDIO_URL
-                    }
-                  }
-              </code></pre>
-            </div>
-          </div>
-          <aside class="notes">
             <p>
-              Once we have all of the definitions loaded in, Rust code can be
-              emitted for them. We initially used procedural macros for this,
-              but we switched to build scripts because rust-analyzer struggled
-              and our users appreciated being able to see the generated code.
+              Our packages are defined as TOML, including their components, and
+              this includes core Ambient definitions, as you can see here.
+              However, we need to project these definitions into the Rust code
+              so that they can be used.
+            </p>
+            <p>
+              We initially used procedural macros for this, but we switched to
+              build scripts because rust-analyzer struggled and our users
+              appreciated being able to see the generated code.
             </p>
             <p>
               These files are placed in `src`, not `OUT_DIR`, to make it easier
@@ -761,56 +608,13 @@ scope:ambient_core::camera (Ambient)
           </aside>
         </section>
 
-        <!-- Workflow challenges slide with centered list -->
-        <section>
-          <h2>Workflow</h2>
-          <h3>that's a lot of windows</h3>
-          <div
-            style="
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 80%;
-            "
-          >
-            <ul
-              style="
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                line-height: 1.8;
-                text-align: center;
-              "
-            >
-              <li>Lots of moving parts</li>
-              <li>Workspaces aren't perfect</li>
-              <li><code>rust-analyzer</code> only uses one workspace</li>
-              <li>Five contexts, five windows!</li>
-            </ul>
-          </div>
-          <aside class="notes">
-            <p>
-              If you've been keeping count, you'll have noticed that we had a
-              lot of moving parts. Rust workspaces do a pretty good job of
-              grouping together packages, but they don't support cross-toolchain
-              packages (that is, mixing desktop and WASM), and they don't
-              support nesting.
-            </p>
-            <p>
-              rust-analyzer works with the workspace you have in the directory
-              you've opened in your IDE. As a result, we had up to five VS Code
-              windows open: the native client, web client, guest code, cloud
-              services, and the website. That was obviously a bit of a struggle.
-            </p>
-          </aside>
-        </section>
-
         <!-- Workflow automation slide with code example -->
         <section>
-          <h2>Workflow</h2>
-          <h3>Automation</h3>
+          <h2>Workflow automation</h2>
           <div style="display: flex; align-items: center; height: 80%">
             <div style="flex: 0 0 50%">
+              <p>Workspaces aren't perfect</p>
+              <p>Five contexts, five windows!</p>
               <p>cargo-xtask pattern:</p>
               <p>
                 <a
@@ -854,6 +658,17 @@ scope:ambient_core::camera (Ambient)
           </div>
           <aside class="notes">
             <p>
+              Rust workspaces do a pretty good job of grouping together
+              packages, but they don't support cross-toolchain packages (that
+              is, mixing desktop and WASM), and they don't support nesting.
+            </p>
+            <p>
+              rust-analyzer works with the workspace you have in the directory
+              you've opened in your IDE. As a result, we had up to five VS Code
+              windows open: the native client, web client, guest code, cloud
+              services, and the website.
+            </p>
+            <p>
               To help with this, we used the `cargo-xtask` pattern. We built a
               tool in Rust in our root workspace, `campfire`, that could handle
               meta-development tasks like building all of the clients, updating
@@ -863,61 +678,6 @@ scope:ambient_core::camera (Ambient)
               This was then aliased using `cargo/config.toml` to make it easy to
               access. This was an upfront cost, but it paid for itself many
               times over, especially when building for multiple platforms.
-            </p>
-          </aside>
-        </section>
-
-        <!-- Testing approach slide with image -->
-        <!-- Two-column layout with text and image -->
-        <section>
-          <h2>Workflow</h2>
-          <h3>Testing</h3>
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 80%;
-              width: 80%;
-              margin: 0 auto;
-            "
-          >
-            <div style="flex: 0 0 55%">
-              <p>Golden image tests</p>
-              <p>Software rendering for CI</p>
-              <p>Still brittle</p>
-            </div>
-            <div
-              style="
-                flex: 0 0 45%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              <img
-                src="media/testing.png"
-                alt="Golden image test example"
-                style="width: 100%"
-              />
-            </div>
-          </div>
-          <aside class="notes">
-            <p>
-              For testing, we used a combination of unit tests and golden image
-              tests: we would run a test case, wait a few seconds, take a
-              screenshot, and compare it to a reference image. Using software
-              rendering, we were able to run this in our CI.
-            </p>
-            <p>
-              This worked pretty well, but it had some drawbacks: Software
-              rendering is very slow and unstable and the tests were still
-              brittle due to networking, rendering, timing and randomness
-              issues.
-            </p>
-            <p>
-              We considered more complex tests and using a GPU-based CI runner,
-              but we didn't have the time to implement them.
             </p>
           </aside>
         </section>
@@ -1991,6 +1751,47 @@ pub fn in_area(position: Vec3, radius: f32) -&gt; Vec&lt;EntityId&gt; {
               language like Lua, Ruby or Python - especially as all of those now
               have Rust implementations! I'm personally curious about using C#
               as a scripting language myself.
+            </p>
+          </aside>
+        </section>
+
+        <!-- Centered bullet point slide -->
+        <section>
+          <h2>The packages dream</h2>
+          <ul
+            style="
+              list-style: none;
+              padding: 0;
+              margin: 0;
+              line-height: 1.8;
+              text-align: center;
+            "
+          >
+            <li>Flexibility, robustness, dynamic composability?</li>
+            <li>Easier said than done</li>
+            <li>Get it working, then make it good?</li>
+            <li>Maybe Verse will crack it</li>
+          </ul>
+          <aside class="notes">
+            <p>
+              We wanted to make all of our packages naturally interoperate, so
+              that anyone could mod any game. Unfortunately, this is still an
+              active research problem: it is very difficult to have all of these
+              disparate packages from disparate authors function together as a
+              cohesive whole, especially without any prior coordination. It
+              needed a lot more time in the oven.
+            </p>
+            <p>
+              I think this problem is fascinating, but cracking it requires
+              significant R&D beyond what we had available: my hope was that we
+              could rely on "worse is better", ship a v1, and then iterate on it
+              to get to a better place. We didn't get there, obviously.
+            </p>
+            <p>
+              I think Unreal Engine's Verse language is the most substantive
+              effort at solving this, but right now it's the Fortnite scripting
+              language, so I guess we'll have to wait a few more years to find
+              out.
             </p>
           </aside>
         </section>
