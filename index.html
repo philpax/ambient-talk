@@ -1751,8 +1751,12 @@ interface entity {
               assumption no longer held, and we did not update for it. We
               optimised for developer experience first - both ours and package
               makers - which meant we wanted to ignore the complications of
-              real-world networking. Unfortunately, this came back to bite us,
-              and it's not a trivial thing to retrofit.
+              real-world networking. Our synchronization primarily relied on
+              sending ECS component diffs directly between server and client, a
+              method that offers simplicity but is highly sensitive to network
+              latency, leading to visual inconsistencies and lag when delays
+              occur. Unfortunately, this came back to bite us, and it's not a
+              trivial thing to retrofit.
             </p>
             <p>
               We attempted to work around this by allocating cloud servers near
@@ -1837,7 +1841,10 @@ interface entity {
             <p>
               We shouldn't have tried to use Rust for *everything*, especially
               not the website. Fundamentally, we had a finite "novelty budget",
-              and we should have spent it better.
+              and we should have spent it better. Going all-in on Dioxus,
+              WebGPU, WASM, and WebTransport was simply too much. Focusing our
+              novelty on just one or two core areas might have been more
+              sustainable.
             </p>
             <p>
               Finally, we needed to meet people where they were. We built all of
